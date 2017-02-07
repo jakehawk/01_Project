@@ -45,6 +45,7 @@ $(function(){
 		this.flop = false;
 		this.turn = false;
 		this.river = false;
+		this.end = false;
 		this.cards = function() {
 			console.log('c1: '+this.val1+' of '+this.suit1);
 			console.log('c2: '+this.val2+' of '+this.suit2);
@@ -153,11 +154,16 @@ $(function(){
 				if (orderedP1[i] === orderedP1[i+1] && 
 					orderedP1[i] === orderedP1[i+2] && 
 					orderedP1[i+2] != null) {
-					if (player1.threes.indexOf(orderedP1[i]) === -1 && 
-						player1.best < 3){
+					if (player1.best < 3)
 						player1.best = 3;
-						player1.threes.push(orderedP1[i])
-					}
+				}
+				//Four-of Check
+				if (orderedP1[i] === orderedP1[i+1] && 
+					orderedP1[i] === orderedP1[i+2] &&
+					orderedP1[i] === orderedP1[i+3] &&
+					orderedP1[i+3] != null) {
+					if (player1.best < 4)
+						player1.best = 4;
 				}
 				//Flush Check
 				console.log('suit at position '+i+': '+p1CardSuits[i]);
@@ -199,11 +205,16 @@ $(function(){
 				if (orderedP2[i] === orderedP2[i+1] && 
 					orderedP2[i] === orderedP2[i+2] && 
 					orderedP2[i+2] != null) {
-					if (player2.threes.indexOf(orderedP2[i]) === -1 && 
-						player2.best < 3){
+					if (player2.best < 3)
 						player2.best = 3;
-						player2.threes.push(orderedP2[i])
-					}
+				}
+				//Four-of Check
+				if (orderedP2[i] === orderedP2[i+1] && 
+					orderedP2[i] === orderedP2[i+2] &&
+					orderedP2[i] === orderedP2[i+3] &&
+					orderedP2[i+3] != null) {
+					if (player2.best < 4)
+						player2.best = 4;
 				}
 				//Flush Check
 				switch(p2CardSuits[i]) {
@@ -225,10 +236,10 @@ $(function(){
 				p2DiamondC >= 5 || p2ClubC >= 5 && 
 				player2.best < 5)
 				player2.best = 5;
-			middle.turn = true;
-		} else if (middle.turn && !(middle.river)) {
-			//After Flop is revealed
 
+			middle.turn = true;
+ 		} else if (middle.turn && !(middle.river)) {
+			//After Flop is revealed
 			p1CardVals.push(middle.val4);
 			p1CardSuits.push(middle.suit4);
 			p2CardVals.push(middle.val4);
@@ -255,10 +266,16 @@ $(function(){
 				if (orderedP1[i] === orderedP1[i+1] && 
 					orderedP1[i] === orderedP1[i+2] && 
 					orderedP1[i+2] != null) {
-					if (player1.best < 3){
+					if (player1.best < 3)
 						player1.best = 3;
-						player1.threes.push(orderedP1[i])
-					}
+				}
+				//Four-of Check
+				if (orderedP1[i] === orderedP1[i+1] && 
+					orderedP1[i] === orderedP1[i+2] &&
+					orderedP1[i] === orderedP1[i+3] &&
+					orderedP1[i+3] != null) {
+					if (player1.best < 4)
+						player1.best = 4;
 				}
 				//Flush Check
 				switch(p1CardSuits[i]) {
@@ -303,6 +320,14 @@ $(function(){
 						player2.best = 3;
 						player2.threes.push(orderedP2[i])
 					}
+				}
+				//Four-of Check
+				if (orderedP2[i] === orderedP2[i+1] && 
+					orderedP2[i] === orderedP2[i+2] &&
+					orderedP2[i] === orderedP2[i+3] &&
+					orderedP2[i+3] != null) {
+					if (player2.best < 4)
+						player2.best = 4;
 				}
 				//Flush Check
 				switch(p2CardSuits[i]) {
@@ -359,6 +384,14 @@ $(function(){
 						player1.threes.push(orderedP1[i])
 					}
 				}
+				//Four-of Check
+				if (orderedP1[i] === orderedP1[i+1] && 
+					orderedP1[i] === orderedP1[i+2] &&
+					orderedP1[i] === orderedP1[i+3] &&
+					orderedP1[i+3] != null) {
+					if (player1.best < 4)
+						player1.best = 4;
+				}
 				//Flush Check
 				switch(p1CardSuits[i]) {
 					case 'Hearts':
@@ -403,6 +436,14 @@ $(function(){
 						player2.threes.push(orderedP2[i])
 					}
 				}
+				//Four-of Check
+				if (orderedP2[i] === orderedP2[i+1] && 
+					orderedP2[i] === orderedP2[i+2] &&
+					orderedP2[i] === orderedP2[i+3] &&
+					orderedP2[i+3] != null) {
+					if (player2.best < 4)
+						player2.best = 4;
+				}
 				//Flush Check
 				switch(p2CardSuits[i]) {
 					case 'Hearts':
@@ -424,19 +465,21 @@ $(function(){
 				player2.best < 5) {
 				player2.best = 5;
 			}
+
+			middle.end = true;
 		}
 		console.log('P1 best: ' + player1.best)
 		console.log('P2 best: ' + player2.best)
 	}
 
-	takeTurn();
-	takeTurn();
-	takeTurn();
-	takeTurn();
+	// takeTurn();
+	// takeTurn();
+	// takeTurn();
+	// takeTurn();
 
-	console.log(player1.cards());
-	console.log(player2.cards());
-	console.log(middle.cards());
+	// console.log(player1.cards());
+	// console.log(player2.cards());
+	// console.log(middle.cards());
 
 	var winTest = function() {
 		var p1Wins = ['P1 wins with a High Card', 'P1 wins with a Pair', 'P1 wins with two Pairs', 
@@ -465,9 +508,15 @@ $(function(){
 		}
 	}
 
-	winTest();
+	// winTest();
 
-	
+	$('#test').click(function() {
+		if(!(middle.end))
+			takeTurn();
+	});
+	$('#test2').click(function() {
+		winTest()
+	});
 
 
 
