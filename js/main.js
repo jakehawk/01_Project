@@ -8,7 +8,6 @@ $(function(){
 		p2CardVals = [],
 		p2CardSuits = [];
 
-
 /*=========== Constructors ==============================================*/
 	var Card = function(suit, val) {
 		this.suit = suit;
@@ -141,6 +140,7 @@ $(function(){
 				pairTest(orderedP1, player1, i);
 				threeTest(orderedP1, player1, i);
 				fourTest(orderedP1, player1, i);
+				fhTest(orderedP1, player1, i);
 				//Flush Check
 				switch(p1CardSuits[i]) {
 					case 'Hearts':
@@ -165,6 +165,7 @@ $(function(){
 				pairTest(orderedP2, player2, i);
 				threeTest(orderedP2, player2, i);
 				fourTest(orderedP2, player2, i);
+				fhTest(orderedP2, player2, i);
 				//Flush Check
 				switch(p2CardSuits[i]) {
 					case 'Hearts':
@@ -202,6 +203,7 @@ $(function(){
 				pairTest(orderedP1, player1, i);
 				threeTest(orderedP1, player1, i);
 				fourTest(orderedP1, player1, i);
+				fhTest(orderedP1, player1, i);
 				//Flush Check
 				switch(p1CardSuits[i]) {
 					case 'Hearts':
@@ -227,6 +229,7 @@ $(function(){
 				pairTest(orderedP2, player2, i);
 				threeTest(orderedP2, player2, i);
 				fourTest(orderedP2, player2, i);
+				fhTest(orderedP2, player2, i);
 				//Flush Check
 				switch(p2CardSuits[i]) {
 					case 'Hearts':
@@ -258,11 +261,13 @@ $(function(){
 			var orderedP1 = p1CardVals.sort();
 			var orderedP2 = p2CardVals.sort();
 			var straight = p1CardVals;
+			console.log('Ordered: '+orderedP1);
 			console.log('River!');
 			for (i=0; i<orderedP1.length; i++) {
 				pairTest(orderedP1, player1, i);
 				threeTest(orderedP1, player1, i);
 				fourTest(orderedP1, player1, i);
+				fhTest(orderedP1, player1, i);
 				//Flush Check
 				switch(p1CardSuits[i]) {
 					case 'Hearts':
@@ -288,6 +293,7 @@ $(function(){
 				pairTest(orderedP2, player2, i);
 				threeTest(orderedP2, player2, i);
 				fourTest(orderedP2, player2, i);
+				fhTest(orderedP2, player2, i);
 				//Flush Check
 				switch(p2CardSuits[i]) {
 					case 'Hearts':
@@ -322,7 +328,7 @@ $(function(){
 				if (player.best === 0){
 					player.best = 1;
 					player.pairs.push(ordered[i]);
-				} else if (player.best === 1) {
+				} else if (player.best === 1 || player.best === 2) {
 					player.best = 2;
 					player.pairs.push(ordered[i]);
 				}
@@ -347,9 +353,19 @@ $(function(){
 			ordered[i] === ordered[i+2] &&
 			ordered[i] === ordered[i+3] &&
 			ordered[i+3] != null) {
-			if (player.best < 4)
-				player.best = 4;
+			if (player.best < 7)
+				player.best = 7;
 		}
+	}
+
+	var fhTest = function(ordered, player, i) {
+		if (player.threes[0] != null && player.pairs.length > 1 && player.best < 6){
+			player.best = 6;
+		} 
+	}
+
+	var straightTest = function(ordered, player, i) {
+
 	}
 
 	var winTest = function() {
@@ -376,6 +392,11 @@ $(function(){
 	console.log(player2.cards());
 	console.log(middle.cards());
 
+	takeTurn();
+	takeTurn();
+	takeTurn();
+	takeTurn();
+	winTest();
 	$('#test').click(function() {
 		if(!(middle.end))
 			takeTurn();
