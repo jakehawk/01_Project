@@ -3,6 +3,11 @@ $(function(){
 	var vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
 	var deck = [];
 	var i=0, j=0, x=0;
+	var p1CardVals = [],
+		p1CardSuits = [],
+		p2CardVals = [],
+		p2CardSuits = [];
+
 
 /*=========== Constructors ==============================================*/
 	var Card = function(suit, val) {
@@ -11,32 +16,41 @@ $(function(){
 	}
 
 	function Player(card1, card2, chips, turn) {
-		this.card1 = card1;
-		this.card2 = card2;
+		this.val1 = card1.val;
+		this.suit1 = card1.suit;
+		this.val2 = card2.val;
+		this.suit2 = card2.suit;
 		this.chips = chips;
 		this.turn = turn;
 		this.best = 0;
+		this.pairs = [];
+		this.threes = [];
 		this.cards = function() {
-			console.log('Player 1 has a '+this.card1.val+' of '+this.card1.suit+
-				' and a '+this.card2.val+' of '+this.card2.suit);
+			console.log('Player has a '+this.val1+' of '+this.suit1+
+				' and a '+this.val2+' of '+this.suit2);
 		}
 	}
 
 	function Middle(card1, card2, card3, card4, card5) {
-		this.card1 = card1;
-		this.card2 = card2;
-		this.card3 = card3;
+		this.val1 = card1.val;
+		this.suit1 = card1.suit;
+		this.val2 = card2.val;
+		this.suit2 = card2.suit;
+		this.val3 = card3.val;
+		this.suit3 = card3.suit;
+		this.val4 = card4.val;
+		this.suit4 = card4.suit;
+		this.val5 = card5.val;
+		this.suit5 = card5.suit;
 		this.flop = false;
-		this.card4 = card4;
 		this.turn = false;
-		this.card5 = card5;
 		this.river = false;
 		this.cards = function() {
-			console.log('c1: '+this.card1.val+' of '+this.card1.suit);
-			console.log('c2: '+this.card2.val+' of '+this.card2.suit);
-			console.log('c3: '+this.card3.val+' of '+this.card3.suit);
-			console.log('c4: '+this.card4.val+' of '+this.card4.suit);
-			console.log('c5: '+this.card5.val+' of '+this.card5.suit);
+			console.log('c1: '+this.val1+' of '+this.suit1);
+			console.log('c2: '+this.val2+' of '+this.suit2);
+			console.log('c3: '+this.val3+' of '+this.suit3);
+			console.log('c4: '+this.val4+' of '+this.suit4);
+			console.log('c5: '+this.val5+' of '+this.suit5);
 		}
 	}
 
@@ -71,96 +85,271 @@ $(function(){
 
 
 /*=========== Game Logic ================================================*/
+	
 	var takeTurn = function() {
-		var p1c1 = player1.card1.val,
-		p1c2 = player1.card2.val,
-		p2c1 = player2.card1.val, 
-		p2c2 = player2.card2.val,
-		mc1 = middle.card1.val,
-		mc2 = middle.card2.val,
-		mc3 = middle.card3.val,
-		mc4 = middle.card4.val,
-		mc5 = middle.card5.val;
-
-		var p1Pair = (p1c1===p1c2),
-		p2Pair = (p2c1===p2c2),
-		flopPair = (mc1===mc2 || mc1===mc3 || mc2===mc3),
-		p1Flop = (p1c1===mc1 || p1c1===mc2 || p1c1===mc3 ||
-			p1c2===mc1 || p1c2===mc2 || p1c2===mc3),
-		p2Flop = (p2c1===mc1 || p2c1===mc2 || p2c1===mc3 ||
-			p2c2===mc1 || p2c2===mc2 || p2c2===mc3),
-		turnPair = (mc1===mc4 || mc2===mc4 || mc3===mc4),
-		p1Turn = (p1c1===mc4 || p1c2===mc4),
-		p2Turn = (p2c1===mc4 || p2c2===mc4),
-		riverPair = (mc1===mc5 || mc2===mc5 || mc3===mc5 || mc4===mc5),
-		p1River = (p1c1===mc5 || p1c2===mc5),
-		p2River = (p2c1===mc5 || p2c2===mc5);
-
-
-		if(middle.flop === false){
-			if(p1Pair){
-				console.log('You have a pair!');
+		var p1SpadeC=0, p1ClubC=0, p1HeartC=0, p1DiamondC=0,
+		p2SpadeC=0, p2ClubC=0, p2HeartC=0, p2DiamondC=0;
+		if (!(middle.flop)) {
+			//Before middle is revealed
+			p1CardVals.push(player1.val1);
+			p1CardSuits.push(player1.suit1);
+			p1CardVals.push(player1.val2);
+			p1CardSuits.push(player1.suit2);
+			p2CardVals.push(player2.val1);
+			p2CardSuits.push(player2.suit1);
+			p2CardVals.push(player2.val2);
+			p2CardSuits.push(player2.suit2);
+			if (p1CardVals[0] === p1CardVals[1] && 
+				player1.best < 1){
 				player1.best = 1;
-			} else if (p2Pair){
-				console.log('P2 has a pair!');
-				player2.best = 1;
-			} else{ 
-				console.log('No initial pairs!');
+				player1.pairs.push(p1CardVals[1]);
+			}
+			if (p2CardVals[0] === p2CardVals[1] && 
+				player1.best < 1){
+				player2.best =1;
+				player2.pairs.push(p2CardVals[1]);
 			}
 			middle.flop = true;
 		} else if (middle.flop && !(middle.turn)) {
-			if (flopPair) {
-				console.log('Both players now have a pair');
-				player1.best = 1;
-				player2.best = 1;
-			} else if (p1Flop) {
-				console.log('You have a pair using the flop!');
-				player1.best = 1;
-			} else if (p2Flop) {
-				console.log('P2 has a pair using the flop!');
-				player2.best = 1;
-			} else 
-				console.log('Still no pair in the flop');
-			middle.turn = true;
+			//After Flop is revealed
+			p1CardVals.push(middle.val1);
+			p1CardVals.push(middle.val2);
+			p1CardVals.push(middle.val3);
+			p1CardSuits.push(middle.suit1);
+			p1CardSuits.push(middle.suit2);
+			p1CardSuits.push(middle.suit3);
+			p2CardVals.push(middle.val1);
+			p2CardVals.push(middle.val2);
+			p2CardVals.push(middle.val3);
+			p2CardSuits.push(middle.suit1);
+			p2CardSuits.push(middle.suit2);
+			p2CardSuits.push(middle.suit3);
+			var orderedP1 = p1CardVals.sort();
+			var orderedP2 = p2CardVals.sort();
+			var straight = p1CardVals;
+			for (i=0; i<orderedP1.length-1; i++) {
+				//Pair Check
+				if (orderedP1[i] === orderedP1[i+1]) {
+					if (player1.pairs.indexOf(orderedP1[i]) === -1 && 
+						player1.best < 1) {
+						player1.best = 1;
+						player1.pairs.push(orderedP1[i]);
+					}
+					if (player1.pairs.length > 1 && 
+						player1.best < 2)
+						player1.best = 2;
+				}
+			}
+			// 	//Three-of Check
+			// 	if (orderedP1[i] === orderedP1[i+1] && 
+			// 		orderedP1[i] === orderedP1[i+2] && 
+			// 		orderedP1[i+2] != null) {
+			// 		if (player1.threes.indexOf(orderedP1[i]) === -1 && 
+			// 			player1.best < 3){
+			// 			player1.best = 3;
+			// 			player1.threes.push(orderedP1[i])
+			// 		}
+			// 	}
+			// 	//Flush Check
+			// 	switch(p1CardSuits[i]) {
+			// 		case 'Hearts':
+			// 			p1HeartC++;
+			// 		case 'Spades':
+			// 			p1SpadeC++;
+			// 		case 'Diamonds':
+			// 			p1DiamondC++;
+			// 		case 'Clubs':
+			// 			p1ClubC++;
+			// 	}
+			// }
+			// if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
+			// 	p1DiamondC >= 5 || p1ClubC >= 5) && 
+			// 	player1.best < 5) {
+			// 	player1.best = 5;
+			// }
+			for (i=0; i<orderedP2.length-1; i++) {
+				//Pair Check
+				if (orderedP2[i] === orderedP2[i+1]) {
+					if (player2.pairs.indexOf(orderedP2[i]) === -1 && 
+						player2.best < 1) {
+						player2.best = 1;
+						player2.pairs.push(orderedP2[i]);
+					}
+					if (player2.pairs.length > 1 && 
+						player2.best < 2)
+						player2.best = 2;
+				}
+			}
+			// 	//Three-of Check
+			// 	if (orderedP2[i] === orderedP2[i+1] && 
+			// 		orderedP2[i] === orderedP2[i+2] && 
+			// 		orderedP2[i+2] != null) {
+			// 		if (player2.threes.indexOf(orderedP2[i]) === -1 && 
+			// 			player2.best < 3){
+			// 			player2.best = 3;
+			// 			player2.threes.push(orderedP2[i])
+			// 		}
+			// 	}
+			// 	//Flush Check
+			// 	switch(p2CardSuits[i]) {
+			// 		case 'Hearts':
+			// 			p2HeartC++;
+			// 		case 'Spades':
+			// 			p2SpadeC++;
+			// 		case 'Diamonds':
+			// 			p2DiamondC++;
+			// 		case 'Clubs':
+			// 			p2ClubC++;
+			// 	}
+			// }
+			// if (p2HeartC >= 5 || p2SpadeC >= 5 || 
+			// 	p2DiamondC >= 5 || p2ClubC >= 5 && 
+			// 	player2.best < 5) {
+			// 	player2.best = 5;
+			// }
 		} else if (middle.turn && !(middle.river)) {
-			if (turnPair) {
-				console.log('Both players now have a pair');
-				player1.best = 1;
-				player2.best = 1;
-			} else if (p1Turn) {
-				console.log('You have a pair using the turn!');
-				player1.best = 1;
-			} else if (p2Turn) {
-				console.log('P2 has a pair using the turn!');
-				player2.best = 1;
-			} else 
-				console.log('Still no pair in the turn');
-			middle.river = true;
-		} else if (middle.river) {
-			if (riverPair) {
-				console.log('Both players now have a pair');
-				player1.best = 1;
-				player2.best = 1;
-			} else if (p1River) {
-				console.log('You have a pair using the river!');
-				player1.best = 1;
-			} else if (p2River) {
-				console.log('P2 has a pair using the river!');
-				player2.best = 1;
-			} else 
-				console.log('Still no pair in the river');
+			//After Flop is revealed
+			p1CardVals.push(middle.val4);
+			p1CardSuits.push(middle.suit4);
+			p2CardVals.push(middle.val4);
+			p2CardSuits.push(middle.suit4);
+			var orderedP1 = p1CardVals.sort();
+			var orderedP2 = p2CardVals.sort();
+			var straight = p1CardVals;
+			for (i=0; i<orderedP1.length-1; i++) {
+				//Pair Check
+				if (orderedP1[i] === orderedP1[i+1]) {
+					if (player1.pairs.indexOf(orderedP1[i]) === -1 && 
+						player1.best < 1) {
+						player1.best = 1;
+						player1.pairs.push(orderedP1[i]);
+					}
+					if (player1.pairs.length > 1 && 
+						player1.best < 2)
+						player1.best = 2;
+				}
+			}
+			// 	//Three-of Check
+			// 	if (orderedP1[i] === orderedP1[i+1] && 
+			// 		orderedP1[i] === orderedP1[i+2] && 
+			// 		orderedP1[i+2] != null) {
+			// 		if (player1.threes.indexOf(orderedP1[i]) === -1 && 
+			// 			player1.best < 3){
+			// 			player1.best = 3;
+			// 			player1.threes.push(orderedP1[i])
+			// 		}
+			// 	}
+			// 	//Flush Check
+			// 	switch(p1CardSuits[i]) {
+			// 		case 'Hearts':
+			// 			p1HeartC++;
+			// 		case 'Spades':
+			// 			p1SpadeC++;
+			// 		case 'Diamonds':
+			// 			p1DiamondC++;
+			// 		case 'Clubs':
+			// 			p1ClubC++;
+			// 	}
+			// }
+			// if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
+			// 	p1DiamondC >= 5 || p1ClubC >= 5) && 
+			// 	player1.best < 5) {
+			// 	player1.best = 5;
+			// }
+			for (i=0; i<orderedP2.length-1; i++) {
+				//Pair Check
+				if (orderedP2[i] === orderedP2[i+1]) {
+					if (player2.pairs.indexOf(orderedP2[i]) === -1 && 
+						player2.best < 1) {
+						player2.best = 1;
+						player2.pairs.push(orderedP2[i]);
+					}
+					if (player2.pairs.length > 1 && 
+						player2.best < 2)
+						player2.best = 2;
+				}
+			}
+			// 	//Three-of Check
+			// 	if (orderedP2[i] === orderedP2[i+1] && 
+			// 		orderedP2[i] === orderedP2[i+2] && 
+			// 		orderedP2[i+2] != null) {
+			// 		if (player2.threes.indexOf(orderedP2[i]) === -1 &&
+			// 			player2.best<3){
+			// 			player2.best = 3;
+			// 			player2.threes.push(orderedP2[i])
+			// 		}
+			// 	}
+			// 	//Flush Check
+			// 	switch(p2CardSuits[i]) {
+			// 		case 'Hearts':
+			// 			p2HeartC++;
+			// 		case 'Spades':
+			// 			p2SpadeC++;
+			// 		case 'Diamonds':
+			// 			p2DiamondC++;
+			// 		case 'Clubs':
+			// 			p2ClubC++;
+			// 	}
+			// }
+			// if ((p2HeartC >= 5 || p2SpadeC >= 5 || 
+			// 	p2DiamondC >= 5 || p2ClubC >= 5) && 
+			// 	player2.best < 5) {
+			// 	player2.best = 5;
+			// }
+		} else if (middle.turn && !(middle.river)) {
+			//After Flop is revealed
+			p1CardVals.push(middle.val4);
+			p1CardSuits.push(middle.suit4);
+			p2CardVals.push(middle.val4);
+			p2CardSuits.push(middle.suit4);
+			var orderedP1 = p1CardVals.sort();
+			var orderedP2 = p2CardVals.sort();
+			var straight = p1CardVals;
+			for (i=0; i<orderedP1.length-1; i++) {
+				//Pair Check
+				if (orderedP1[i] === orderedP1[i+1]) {
+					if (player1.pairs.indexOf(orderedP1[i]) === -1 && 
+						player1.best < 1) {
+						player1.best = 1;
+						player1.pairs.push(orderedP1[i]);
+					}
+					if (player1.pairs.length > 1 && 
+						player1.best < 2)
+						player1.best = 2;
+				}
+			}
 		}
-		console.log('flop: '+middle.flop);
-		console.log('turn: '+middle.turn);
-		console.log('river: '+middle.river);
+		console.log('P1 best: ' + player1.best)
+		console.log('P2 best: ' + player2.best)
 	}
+
+	takeTurn();
+	takeTurn();
+	takeTurn();
+	takeTurn();
+
 	console.log(player1.cards());
 	console.log(player2.cards());
 	console.log(middle.cards());
-	takeTurn();
-	takeTurn();
-	takeTurn();
-	takeTurn();
+
+	var winTest = function() {
+		if (player1.best > player2.best)
+			console.log('P1 wins!')
+		else if (player1.best < player2.best)
+			console.log('P2 wins!')
+		else if (player1.best === player2.best) {
+			if (vals.indexOf(player1.pairs) > vals.indexOf(player2.pairs)){
+				console.log('P1 wins!');
+			}
+			else if (vals.indexOf(player1.pairs) < vals.indexOf(player2.pairs)){
+				console.log('P2 wins!');
+			} else {
+				console.log('It\'s a tie');
+			}
+		}
+	}
+
+	winTest();
 
 	
 
@@ -174,3 +363,105 @@ $(function(){
 
 	// $('#player1').click(takeTurn());
 });
+
+
+
+
+	// var takeTurn = function() {
+	// 	var p1c1 = player1.val1,
+	// 	p1c2 = player1.val2,
+	// 	p2c1 = player2.val1, 
+	// 	p2c2 = player2.val2,
+	// 	mc1 = middle.val1,
+	// 	mc2 = middle.val2,
+	// 	mc3 = middle.val3,
+	// 	mc4 = middle.val4,
+	// 	mc5 = middle.val5;
+
+	// 	//Pair booleans
+	// 	var p1Pair = (p1c1===p1c2),
+	// 	p2Pair = (p2c1===p2c2),
+	// 	flopPair = (mc1===mc2 || mc1===mc3 || mc2===mc3),
+	// 	p1c1Flop = (p1c1===mc1 || p1c1===mc2 || p1c1===mc3),
+	// 	p1c2Flop = (p1c2===mc1 || p1c2===mc2 || p1c2===mc3),
+	// 	p2c1Flop = (p2c1===mc1 || p2c1===mc2 || p2c1===mc3),
+	// 	p2c2Flop = (p2c2===mc1 || p2c2===mc2 || p2c2===mc3),
+	// 	turnPair = (mc1===mc4 || mc2===mc4 || mc3===mc4),
+	// 	p1c1Turn = (p1c1===mc4),
+	// 	p1c2Turn = (p1c2===mc4),
+	// 	p2c1Turn = (p2c1===mc4),
+	// 	p2c2Turn = (p2c2===mc4),
+	// 	riverPair = (mc1===mc5 || mc2===mc5 || mc3===mc5 || mc4===mc5),
+	// 	p1c1River = (p1c1===mc5),
+	// 	p1c2River = (p1c2===mc5),
+	// 	p2c1River = (p2c1===mc5),
+	// 	p2c2River = (p2c2===mc5);
+
+	// 	//Two Pairs booleans
+
+
+
+	// 	if(middle.flop === false){
+	// 		if(p1Pair){
+	// 			player1.best = 1;
+	// 			player1.pairs = p1c1;
+	// 		} else if (p2Pair){
+	// 			player2.best = 1;
+	// 			player2.pairs = p2c1;
+	// 		} else
+	// 		middle.flop = true;
+	// 	} else if (middle.flop && !(middle.turn)) {
+	// 		if (flopPair) {
+	// 			player1.best = 1;
+	// 			player2.best = 1;
+	// 		} else if (p1c1Flop) {
+	// 			player1.best = 1;
+	// 			player1.pairs = p1c1;
+	// 		} else if (p1c2Flop) {
+	// 			player1.best = 1;
+	// 			player1.pairs = p1c2;
+	// 		} else if (p2c1Flop) {
+	// 			player2.best = 1;
+	// 			player2.pairs = p2c1;
+	// 		} else if (p2c2Flop) {
+	// 			player2.best = 1;
+	// 			player2.pairs = p2c2;
+	// 		}
+	// 		middle.turn = true;
+	// 	} else if (middle.turn && !(middle.river)) {
+	// 		if (turnPair) {
+	// 			player1.best = 1;
+	// 			player2.best = 1;
+	// 		} else if (p1c1Turn) {
+	// 			player1.best = 1;
+	// 			player1.pairs = p1c1;
+	// 		} else if (p1c2Turn) {
+	// 			player1.best = 1;
+	// 			player1.pairs = p1c2;
+	// 		} else if (p2c1Turn) {
+	// 			player2.best = 1;
+	// 			player2.pairs = p2c1;
+	// 		} else if (p2c2Turn) {
+	// 			player2.best = 1;
+	// 			player2.pairs = p2c2;
+	// 		}
+	// 		middle.river = true;
+	// 	} else if (middle.river) {
+	// 		if (riverPair) {
+	// 			player1.best = 1;
+	// 			player2.best = 1;
+	// 		} else if (p1c1River) {
+	// 			player1.best = 1;
+	// 			player1.pairs = p1c1;
+	// 		} else if (p1c2River) {
+	// 			players1.best = 1;
+	// 			players1.pairs = p1c2;
+	// 		} else if (p2c1River) {
+	// 			players2.best = 1;
+	// 			players2.pairs = p2c1;
+	// 		} else if (p2c2River) {
+	// 			players2.best = 1;
+	// 			players2.pairs = p2c2;
+	// 		}
+	// 	}
+	// }
