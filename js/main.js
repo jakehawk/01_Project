@@ -134,10 +134,11 @@ $(function(){
 			var orderedP1 = p1CardVals.sort();
 			var orderedP2 = p2CardVals.sort();
 			var straight = p1CardVals;
+
 			console.log('Flop!');
-			for (i=0; i<orderedP1.length-1; i++) {
+			for (i=0; i<orderedP1.length; i++) {
 				//Pair Check
-				if (orderedP1[i] === orderedP1[i+1]) {
+				if (orderedP1[i] === orderedP1[i+1] && orderedP1[i+1] != null) {
 					if (player1.pairs.indexOf(orderedP1[i]) === -1) {
 						if (player1.best === 0){
 							player1.best = 1;
@@ -148,37 +149,42 @@ $(function(){
 						}
 					} 
 				}
-			}
-			//Three-of Check
-			if (orderedP1[i] === orderedP1[i+1] && 
-				orderedP1[i] === orderedP1[i+2] && 
-				orderedP1[i+2] != null) {
-				if (player1.threes.indexOf(orderedP1[i]) === -1 && 
-					player1.best < 3){
-					player1.best = 3;
-					player1.threes.push(orderedP1[i])
+				//Three-of Check
+				if (orderedP1[i] === orderedP1[i+1] && 
+					orderedP1[i] === orderedP1[i+2] && 
+					orderedP1[i+2] != null) {
+					if (player1.threes.indexOf(orderedP1[i]) === -1 && 
+						player1.best < 3){
+						player1.best = 3;
+						player1.threes.push(orderedP1[i])
+					}
+				}
+				//Flush Check
+				console.log('suit at position '+i+': '+p1CardSuits[i]);
+				switch(p1CardSuits[i]) {
+					case 'Hearts':
+						p1HeartC++;
+						break;
+					case 'Spades':
+						p1SpadeC++;
+						break;
+					case 'Diamonds':
+						p1DiamondC++;
+						break;
+					case 'Clubs':
+						p1ClubC++;
+						break;
 				}
 			}
-			// 	//Flush Check
-			// 	switch(p1CardSuits[i]) {
-			// 		case 'Hearts':
-			// 			p1HeartC++;
-			// 		case 'Spades':
-			// 			p1SpadeC++;
-			// 		case 'Diamonds':
-			// 			p1DiamondC++;
-			// 		case 'Clubs':
-			// 			p1ClubC++;
-			// 	}
-			// }
-			// if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
-			// 	p1DiamondC >= 5 || p1ClubC >= 5) && 
-			// 	player1.best < 5) {
-			// 	player1.best = 5;
-			// }
-			for (i=0; i<orderedP2.length-1; i++) {
+			console.log('Hearts: '+p1HeartC+' Diamonds: '+p1DiamondC+' Spades: '+
+				p1SpadeC+' Clubs: '+p1ClubC);
+			if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
+				p1DiamondC >= 5 || p1ClubC >= 5) && 
+				player1.best < 5)
+				player1.best = 5;
+			for (i=0; i<orderedP2.length; i++) {
 				//Pair Check
-				if (orderedP2[i] === orderedP2[i+1]) {
+				if (orderedP2[i] === orderedP2[i+1] && orderedP2[i+1] != null) {
 					if (player2.pairs.indexOf(orderedP2[i]) === -1) {
 						if (player2.best === 0){
 							player2.best = 1;
@@ -189,37 +195,40 @@ $(function(){
 						}
 					} 
 				}
-			}
-			//Three-of Check
-			if (orderedP2[i] === orderedP2[i+1] && 
-				orderedP2[i] === orderedP2[i+2] && 
-				orderedP2[i+2] != null) {
-				if (player2.threes.indexOf(orderedP2[i]) === -1 && 
-					player2.best < 3){
-					player2.best = 3;
-					player2.threes.push(orderedP2[i])
+				//Three-of Check
+				if (orderedP2[i] === orderedP2[i+1] && 
+					orderedP2[i] === orderedP2[i+2] && 
+					orderedP2[i+2] != null) {
+					if (player2.threes.indexOf(orderedP2[i]) === -1 && 
+						player2.best < 3){
+						player2.best = 3;
+						player2.threes.push(orderedP2[i])
+					}
+				}
+				//Flush Check
+				switch(p2CardSuits[i]) {
+					case 'Hearts':
+						p2HeartC++;
+						break;
+					case 'Spades':
+						p2SpadeC++;
+						break;
+					case 'Diamonds':
+						p2DiamondC++;
+						break;
+					case 'Clubs':
+						p2ClubC++;
+						break;
 				}
 			}
-			// 	//Flush Check
-			// 	switch(p2CardSuits[i]) {
-			// 		case 'Hearts':
-			// 			p2HeartC++;
-			// 		case 'Spades':
-			// 			p2SpadeC++;
-			// 		case 'Diamonds':
-			// 			p2DiamondC++;
-			// 		case 'Clubs':
-			// 			p2ClubC++;
-			// 	}
-			// }
-			// if (p2HeartC >= 5 || p2SpadeC >= 5 || 
-			// 	p2DiamondC >= 5 || p2ClubC >= 5 && 
-			// 	player2.best < 5) {
-			// 	player2.best = 5;
-			// }
+			if (p2HeartC >= 5 || p2SpadeC >= 5 || 
+				p2DiamondC >= 5 || p2ClubC >= 5 && 
+				player2.best < 5)
+				player2.best = 5;
 			middle.turn = true;
 		} else if (middle.turn && !(middle.river)) {
 			//After Flop is revealed
+
 			p1CardVals.push(middle.val4);
 			p1CardSuits.push(middle.suit4);
 			p2CardVals.push(middle.val4);
@@ -228,9 +237,10 @@ $(function(){
 			var orderedP2 = p2CardVals.sort();
 			var straight = p1CardVals;
 			console.log('Turn!')
-			for (i=0; i<orderedP1.length-1; i++) {
+			//Loop through p1 cards
+			for (i=0; i<orderedP1.length; i++) {
 				//Pair Check
-				if (orderedP1[i] === orderedP1[i+1]) {
+				if (orderedP1[i] === orderedP1[i+1] && orderedP1[i+1] != null) {
 					if (player1.pairs.indexOf(orderedP1[i]) === -1) {
 						if (player1.best === 0){
 							player1.best = 1;
@@ -241,37 +251,39 @@ $(function(){
 						}
 					} 
 				}
-			}
-			//Three-of Check
-			if (orderedP1[i] === orderedP1[i+1] && 
-				orderedP1[i] === orderedP1[i+2] && 
-				orderedP1[i+2] != null) {
-				if (player1.threes.indexOf(orderedP1[i]) === -1 && 
-					player1.best < 3){
-					player1.best = 3;
-					player1.threes.push(orderedP1[i])
+				//Three-of Check
+				if (orderedP1[i] === orderedP1[i+1] && 
+					orderedP1[i] === orderedP1[i+2] && 
+					orderedP1[i+2] != null) {
+					if (player1.best < 3){
+						player1.best = 3;
+						player1.threes.push(orderedP1[i])
+					}
+				}
+				//Flush Check
+				switch(p1CardSuits[i]) {
+					case 'Hearts':
+						p1HeartC++;
+						break;
+					case 'Spades':
+						p1SpadeC++;
+						break;
+					case 'Diamonds':
+						p1DiamondC++;
+						break;
+					case 'Clubs':
+						p1ClubC++;
+						break;
 				}
 			}
-			// 	//Flush Check
-			// 	switch(p1CardSuits[i]) {
-			// 		case 'Hearts':
-			// 			p1HeartC++;
-			// 		case 'Spades':
-			// 			p1SpadeC++;
-			// 		case 'Diamonds':
-			// 			p1DiamondC++;
-			// 		case 'Clubs':
-			// 			p1ClubC++;
-			// 	}
-			// }
-			// if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
-			// 	p1DiamondC >= 5 || p1ClubC >= 5) && 
-			// 	player1.best < 5) {
-			// 	player1.best = 5;
-			// }
-			for (i=0; i<orderedP2.length-1; i++) {
+			if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
+				p1DiamondC >= 5 || p1ClubC >= 5) && 
+				player1.best < 5)
+				player1.best = 5;
+			//Loop through p2 cards
+			for (i=0; i<orderedP2.length; i++) {
 				//Pair Check
-				if (orderedP2[i] === orderedP2[i+1]) {
+				if (orderedP2[i] === orderedP2[i+1] && orderedP2[i+1] != null) {
 					if (player2.pairs.indexOf(orderedP2[i]) === -1) {
 						if (player2.best === 0){
 							player2.best = 1;
@@ -282,34 +294,37 @@ $(function(){
 						}
 					} 
 				}
-			}
-			//Three-of Check
-			if (orderedP2[i] === orderedP2[i+1] && 
-				orderedP2[i] === orderedP2[i+2] && 
-				orderedP2[i+2] != null) {
-				if (player2.threes.indexOf(orderedP2[i]) === -1 &&
-					player2.best<3){
-					player2.best = 3;
-					player2.threes.push(orderedP2[i])
+				//Three-of Check
+				if (orderedP2[i] === orderedP2[i+1] && 
+					orderedP2[i] === orderedP2[i+2] && 
+					orderedP2[i+2] != null) {
+					if (player2.threes.indexOf(orderedP2[i]) === -1 &&
+						player2.best<3){
+						player2.best = 3;
+						player2.threes.push(orderedP2[i])
+					}
+				}
+				//Flush Check
+				switch(p2CardSuits[i]) {
+					case 'Hearts':
+						p2HeartC++;
+						break;
+					case 'Spades':
+						p2SpadeC++;
+						break;
+					case 'Diamonds':
+						p2DiamondC++;
+						break;
+					case 'Clubs':
+						p2ClubC++;
+						break;
 				}
 			}
-			// 	//Flush Check
-			// 	switch(p2CardSuits[i]) {
-			// 		case 'Hearts':
-			// 			p2HeartC++;
-			// 		case 'Spades':
-			// 			p2SpadeC++;
-			// 		case 'Diamonds':
-			// 			p2DiamondC++;
-			// 		case 'Clubs':
-			// 			p2ClubC++;
-			// 	}
-			// }
-			// if ((p2HeartC >= 5 || p2SpadeC >= 5 || 
-			// 	p2DiamondC >= 5 || p2ClubC >= 5) && 
-			// 	player2.best < 5) {
-			// 	player2.best = 5;
-			// }
+			if ((p2HeartC >= 5 || p2SpadeC >= 5 || 
+				p2DiamondC >= 5 || p2ClubC >= 5) && 
+				player2.best < 5) {
+				player2.best = 5;
+			}
 			middle.river = true;
 		} else if (middle.river) {
 			//After River is revealed
@@ -344,6 +359,26 @@ $(function(){
 						player1.threes.push(orderedP1[i])
 					}
 				}
+				//Flush Check
+				switch(p1CardSuits[i]) {
+					case 'Hearts':
+						p1HeartC++;
+						break;
+					case 'Spades':
+						p1SpadeC++;
+						break;
+					case 'Diamonds':
+						p1DiamondC++;
+						break;
+					case 'Clubs':
+						p1ClubC++;
+						break;
+				}
+			}
+			if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
+				p1DiamondC >= 5 || p1ClubC >= 5) && 
+				player1.best < 5) {
+				player1.best = 5;
 			}
 			for (i=0; i<orderedP2.length-1; i++) {
 				//Pair Check
@@ -368,6 +403,26 @@ $(function(){
 						player2.threes.push(orderedP2[i])
 					}
 				}
+				//Flush Check
+				switch(p2CardSuits[i]) {
+					case 'Hearts':
+						p2HeartC++;
+						break;
+					case 'Spades':
+						p2SpadeC++;
+						break;
+					case 'Diamonds':
+						p2DiamondC++;
+						break;
+					case 'Clubs':
+						p2ClubC++;
+						break;
+				}
+			}
+			if ((p2HeartC >= 5 || p2SpadeC >= 5 || 
+				p2DiamondC >= 5 || p2ClubC >= 5) && 
+				player2.best < 5) {
+				player2.best = 5;
 			}
 		}
 		console.log('P1 best: ' + player1.best)
@@ -384,10 +439,20 @@ $(function(){
 	console.log(middle.cards());
 
 	var winTest = function() {
-		if (player1.best > player2.best)
-			console.log('P1 wins!')
-		else if (player1.best < player2.best)
-			console.log('P2 wins!')
+		var p1Wins = ['P1 wins with a High Card', 'P1 wins with a Pair', 'P1 wins with two Pairs', 
+			'P1 wins with Three of a Kind', 'P1 wins with a Straight!', 'P1 wins with a Flush!', 
+			'P1 wins with a Full House!', 'P1 wins with a Straight Flush!!', 
+			'P1 wins with a Royal Flush!!!!'],
+			p2Wins = ['P2 wins with a High Card', 'P2 wins with a Pair', 'P2 wins with two Pairs', 
+			'P2 wins with Three of a Kind', 'P2 wins with a Straight!', 'P2 wins with a Flush!', 
+			'P2 wins with a Full House!', 'P2 wins with a Straight Flush!!', 
+			'P2 wins with a Royal Flush!!!!']
+		if (player1.best > player2.best){
+			console.log(p1Wins[player1.best]);
+		}
+		else if (player1.best < player2.best){
+			console.log(p2Wins[player2.best]);
+		}
 		else if (player1.best === player2.best) {
 			if (vals.indexOf(player1.pairs) > vals.indexOf(player2.pairs)){
 				console.log('P1 wins!');
