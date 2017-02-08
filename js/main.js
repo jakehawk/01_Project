@@ -87,6 +87,9 @@ $(function(){
 
 /*=========== DOM Manipulation ==========================================*/
 	
+	var $player1 = $('player1');
+	var $player2 = $('player2');
+	var $middle = $('middle');
 
 	$('#play').click(function() {
 		$('.introScreen').toggleClass('off');
