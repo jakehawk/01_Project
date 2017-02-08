@@ -15,12 +15,16 @@ button {
 	display: block;
 }
 
+img {
+	width: 75px;
+	height: 100px;
+}
+
 .player1,
 .player2,
 .middle {
-	color: rgb(230,225,255);
+	float: left;
 }
-
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */

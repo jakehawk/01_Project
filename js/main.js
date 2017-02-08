@@ -1,6 +1,6 @@
 $(function(){
 	var suits = ['Spades', 'Hearts', 'Clubs', 'Diamonds'];
-	var vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
+	var vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'jack', 'queen', 'king', 'ace'];
 	var deck = [];
 	var i=0, j=0, x=0;
 	var playerNum = 1;
@@ -31,6 +31,16 @@ $(function(){
 			return 'Player '+playerNum+' has a '+this.val1+' of '+this.suit1+
 				'\nand a '+this.val2+' of '+this.suit2;
 		}
+		this.card1Image = function() {
+			return '<img src="card_images/'+
+				this.val1+'_of_'+this.suit1.toLowerCase()+
+				'.png" alt="King of Spades" />'
+		}
+		this.card2Image = function() {
+			return '<img src="card_images/'+
+				this.val2+'_of_'+this.suit2.toLowerCase()+
+				'.png" alt="King of Spades" />'
+		}
 	}
 
 	function Middle(card1, card2, card3, card4, card5) {
@@ -54,6 +64,31 @@ $(function(){
 			console.log('c3: '+this.val3+' of '+this.suit3);
 			console.log('c4: '+this.val4+' of '+this.suit4);
 			console.log('c5: '+this.val5+' of '+this.suit5);
+		}
+		this.card1Image = function() {
+			return '<img src="card_images/'+
+				this.val1+'_of_'+this.suit1.toLowerCase()+
+				'.png" alt="King of Spades" />'
+		}
+		this.card2Image = function() {
+			return '<img src="card_images/'+
+				this.val2+'_of_'+this.suit2.toLowerCase()+
+				'.png" alt="King of Spades" />'
+		}
+		this.card3Image = function() {
+			return '<img src="card_images/'+
+				this.val3+'_of_'+this.suit3.toLowerCase()+
+				'.png" alt="King of Spades" />'
+		}
+		this.card4Image = function() {
+			return '<img src="card_images/'+
+				this.val4+'_of_'+this.suit4.toLowerCase()+
+				'.png" alt="King of Spades" />'
+		}
+		this.card5Image = function() {
+			return '<img src="card_images/'+
+				this.val5+'_of_'+this.suit5.toLowerCase()+
+				'.png" alt="King of Spades" />'
 		}
 	}
 
@@ -102,10 +137,15 @@ $(function(){
 		middle = new Middle(getCard(), getCard(), 
 			getCard(), getCard(), getCard());
 		
-		$('#p1c1').text(player1.cards());
-		playerNum++;
-		$('#p2c1').text(player2.cards());
-		$('#m1c1').text(middle.cards());
+		$('#p1c1').html(player1.card1Image());
+		$('#p1c2').html(player1.card2Image());
+		$('#p2c1').html(player2.card1Image());
+		$('#p2c2').html(player2.card2Image());
+		$('#m1c1').html('<img src="card_images/back.png" alt="King of Spades" />');
+		$('#m1c2').html('<img src="card_images/back.png" alt="King of Spades" />');
+		$('#m1c3').html('<img src="card_images/back.png" alt="King of Spades" />');
+		$('#m1c4').html('<img src="card_images/back.png" alt="King of Spades" />');
+		$('#m1c5').html('<img src="card_images/back.png" alt="King of Spades" />');
 		takeTurn();
 
 	});
@@ -116,15 +156,16 @@ $(function(){
 		$('#myModal').css("display", "none");
 	});
 	$('.quit').eq(0).click(function() {
-		$('#myModal').css("display", "none");
-		$('.gameScreen').toggleClass('off');
-		$('.introScreen').toggleClass('off');
+		location.reload();
+		// $('#myModal').css("display", "none");
+		// $('.gameScreen').toggleClass('off');
+		// $('.introScreen').toggleClass('off');
 	});
-	$('window').click(function(){
+	window.onclick = function(event){
 		if (event.target == $('#myModal')){
 			$('#myModal').css("display", "none");
 		}
-	});
+	}
 
 	
 
