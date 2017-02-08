@@ -25,8 +25,14 @@ img {
 	height: 160px;
 	display: inline;	
 }
+.playerButtons {
+	display: inline-block;
+
+}
+#credits {
+	color: rgb(230, 225, 255);
+}
 .gameScreen {
-	height: 550px;
 	width: 800px;
 }
 .player1,
@@ -60,7 +66,8 @@ img {
 }
 
 /* The Close Button */
-.quit {
+.quit,
+.nope {
     color: rgb(230, 60, 120);
     float: right;
     font-size: 28px;
@@ -77,7 +84,9 @@ img {
 .quit:hover,
 .quit:focus,
 .close:hover,
-.close:focus {
+.close:focus,
+.nope:hover,
+.nope:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
@@ -89,4 +98,7 @@ img {
 
 #quitGame {
 	float: left;
+}
+#resetGame {
+	float: right;
 }

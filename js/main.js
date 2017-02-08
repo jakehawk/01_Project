@@ -3,7 +3,6 @@ $(function(){
 	var vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'jack', 'queen', 'king', 'ace'];
 	var deck = [];
 	var i=0, j=0, x=0;
-	var playerNum = 1;
 	var player1, player2, middle;
 	var stageCount = 0;
 	var p1CardVals = [],
@@ -33,9 +32,7 @@ $(function(){
 				'\nand a '+this.val2+' of '+this.suit2;
 		}
 		this.card1Image = function() {
-			return '<img src="card_images/'+
-				this.val1+'_of_'+this.suit1.toLowerCase()+
-				'.png" alt="'+this.val1+' of '+this.suit1+'" />'
+			return '<img src="card_images/'+this.val1+'_of_'+this.suit1.toLowerCase()+'.png" alt="'+this.val1+' of '+this.suit1+'" />'
 		}
 		this.card2Image = function() {
 			return '<img src="card_images/'+
@@ -110,16 +107,6 @@ $(function(){
 		return newCard;
 	}
 
-	// var player1 = new Player(getCard(), 
-	// 	getCard(), 
-	// 	1000, true);
-	
-	// var player2 = new Player(getCard(),
-	// 	getCard(), 
-	// 	1000, false);
-	// var middle = new Middle(getCard(), getCard(), 
-	// 	getCard(), getCard(), getCard());
-
 
 /*=========== DOM Manipulation ==========================================*/
 	
@@ -130,6 +117,7 @@ $(function(){
 	$('#play').click(function() {
 		$('.introScreen').toggleClass('off');
 		$('.gameScreen').toggleClass('off');
+		$('#playerButtons').toggleClass('off');
 
 		player1 = new Player(getCard(), 
 			getCard(), 1000, true);
@@ -140,8 +128,8 @@ $(function(){
 		
 		$('#p1c1').html(player1.card1Image());
 		$('#p1c2').html(player1.card2Image());
-		$('#p2c1').html(player2.card1Image());
-		$('#p2c2').html(player2.card2Image());
+		$('#p2c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#p2c2').html('<img src="card_images/back.png" alt="Card Back" />');
 		$('#m1c1').html('<img src="card_images/back.png" alt="Card Back" />');
 		$('#m1c2').html('<img src="card_images/back.png" alt="Card Back" />');
 		$('#m1c3').html('<img src="card_images/back.png" alt="Card Back" />');
@@ -151,12 +139,31 @@ $(function(){
 	});
 
 	$('#call').click(function() {
+		var wins = ['a High Card', 'a Pair', 'two Pairs', 'Three of a Kind', 'a Straight!', 'a Flush!', 
+		'a Full House!', 'Four of a Kind', 'a Straight Flush!!', 'a Royal Flush!!!!'];
+		var p1Max = Math.max(...player1.best), p2Max = Math.max(...player2.best);
 		if (stageCount < 4)
 			takeTurn();
 		else{
+			$('#p2c1').html(player2.card1Image());
+			$('#p2c2').html(player2.card2Image());
 			var orderedP1 = p1CardVals.sort();
 			var orderedP2 = p2CardVals.sort();
-			winTest(orderedP1, orderedP2);
+			var temp = winTest(orderedP1, orderedP2);
+			$('#winModal').css("display", "block");
+			if (temp === 1){
+				$('#winText').text('Player 1 wins with '+wins[p1Max]);
+			} else if (temp === 0){
+				$('#winText').text('Player 2 wins with '+wins[p2Max]);
+			} else {
+				$('#winText').text('It\'s a draw!')
+			}
+			$('.newGame').click(function() {
+				$('#winModal').css("display", "none");
+			});
+			$('.nope').click(function() {
+				$('#winModal').css("display", "none");
+			});
 		}
 	});
 	
@@ -165,16 +172,49 @@ $(function(){
 	$('#quitGame').click(function() {
 		$('#myModal').css("display", "block");
 	});
-	$('.close').eq(0).click(function() {
+	$('.quit').eq(0).click(function() {
 		$('#myModal').css("display", "none");
 	});
-	$('.quit').eq(0).click(function() {
+	$('.close').eq(0).click(function() {
 		location.reload();
 		// $('#myModal').css("display", "none");
 		// $('.gameScreen').toggleClass('off');
 		// $('.introScreen').toggleClass('off');
 	});
 
+	$('#resetGame').click(function() {
+		deck = [];
+		x = 0;
+		stageCount = 0;
+		p1CardVals = [];
+		p1CardSuits = [];
+		p2CardVals = [];
+		p2CardSuits = [];
+		for (i=0; i<vals.length; i++) {
+			for (j=0; j<suits.length; j++) {
+		    	deck[x] = new Card(suits[j], vals[i]);
+		    	x++;
+			}
+		}	
+		console.log(deck)
+		player1 = new Player(getCard(), 
+			getCard(), 1000, true);
+		player2 = new Player(getCard(), 
+			getCard(), 1000, false);
+		middle = new Middle(getCard(), getCard(), 
+			getCard(), getCard(), getCard());
+		
+		$('#p1c1').html(player1.card1Image());
+		$('#p1c2').html(player1.card2Image());
+		$('#p2c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#p2c2').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c2').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c3').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c4').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c5').html('<img src="card_images/back.png" alt="Card Back" />');
+		takeTurn();
+	});
 
 
 	window.onclick = function(event){
@@ -511,68 +551,90 @@ $(function(){
 		'a Full House!', 'Four of a Kind', 'a Straight Flush!!', 'a Royal Flush!!!!'];
 		var p1Max = Math.max(...player1.best), p2Max = Math.max(...player2.best);
 		if (p1Max > p2Max){
-			console.log('P1 wins with '+wins[p1Max]);
+			return 1;
+			// console.log('P1 wins with '+wins[p1Max]);
 		}
 		else if (p1Max < p2Max){
-			console.log('P2 wins with '+wins[p2Max]);
+			return 0;
+			// console.log('P2 wins with '+wins[p2Max]);
 		}
 		else if (p1Max === p2Max) {
 			if (p1Max === 1){
 				if (player1.pairs[0] > player2.pairs[0]){
-					console.log('P1 wins with '+wins[p1Max]);
+					return 1;
+					// console.log('P1 wins with '+wins[p1Max]);
 				} else if (player1.pairs[0] < player2.pairs[0]){
-					console.log('P2 wins with '+wins[p2Max]);
+					return 0;
+					// console.log('P2 wins with '+wins[p2Max]);
 				} else {
 					if (findHigh(ordered1) > findHigh(ordered2)){
-						console.log('P1 wins with '+wins[p1Max]);
+						return 1;
+						// console.log('P1 wins with '+wins[p1Max]);
 					} else if (findHigh(ordered1) < findHigh(ordered2)){
-						console.log('P2 wins with '+wins[p2Max]);
+						return 0;
+						// console.log('P2 wins with '+wins[p2Max]);
 					} else {
-						console.log('It\'s a tie!');
+						return -1
+						// console.log('It\'s a tie!');
 					}
 				}
 			} else if (p1Max === 2){
 				if (player1.pairs[0] > player2.pairs[0] && 
 					player1.pairs[1] > player2.pairs[1]){
-					console.log('P1 wins with '+wins[p1Max]);
+					return 1;
+					// console.log('P1 wins with '+wins[p1Max]);
 				} else if (player1.pairs[0] < player2.pairs[0] &&
 					player1.pairs[1] < player2.pairs[1]){
-					console.log('P2 wins with '+wins[p2Max]);
+					return 0
+					// console.log('P2 wins with '+wins[p2Max]);
 				} else {
 					if (findHigh(ordered1) > findHigh(ordered2)){
-						console.log('P1 wins with '+wins[p1Max]);
+						return 1
+						// console.log('P1 wins with '+wins[p1Max]);
 					} else if (findHigh(ordered1) < findHigh(ordered2)){
-						console.log('P2 wins with '+wins[p2Max]);
+						return 0
+						// console.log('P2 wins with '+wins[p2Max]);
 					} else {
-						console.log('It\'s a tie!');
+						return -1
+						// console.log('It\'s a tie!');
 					}
 				}
 			} else if (p1Max === 3){
 				if (player1.threes[0] > player2.threes[0]) {
-					console.log('P1 wins with '+wins[p1Max]);
+					return 1
+					// console.log('P1 wins with '+wins[p1Max]);
 				} else if (player1.threes[0] < player2.threes[0]) {
-					console.log('P2 wins with '+wins[p2Max]);
+					return 0
+					// console.log('P2 wins with '+wins[p2Max]);
 				} else {
-					console.log('It\'s a tie!');
+					return -1
+					// console.log('It\'s a tie!');
 				}
 			} else if (p1Max === 7){
 				if (player1.fours[0] > player2.fours[0]) {
-					console.log('P1 wins with '+wins[p1Max]);
+					return 1
+					// console.log('P1 wins with '+wins[p1Max]);
 				} else if (player1.fours[0] < player2.fours[0]) {
-					console.log('P2 wins with '+wins[p2Max]);
+					return 0
+					// console.log('P2 wins with '+wins[p2Max]);
 				} else {
-					console.log('It\'s a tie!');
+					return -1
+					// console.log('It\'s a tie!');
 				}
 			} else if (p1Max === 0){
 				if (findHigh(ordered1) > findHigh(ordered2)){
-					console.log('P1 wins with '+wins[p1Max]);
+					return 1
+					// console.log('P1 wins with '+wins[p1Max]);
 				} else if (findHigh(ordered1) < findHigh(ordered2)){
-					console.log('P2 wins with '+wins[p2Max]);
+					return 0
+					// console.log('P2 wins with '+wins[p2Max]);
 				} else {
-					console.log('It\'s a tie!');
+					return -1
+					// console.log('It\'s a tie!');
 				}
 			} else {
-				console.log('Someone probably wins, but idk who yet');
+				return -1
+				// console.log('Someone probably wins, but idk who yet');
 			}
 		}
 	}
@@ -593,17 +655,4 @@ $(function(){
 		}
 		return Math.max(...temp);
 	}
-	// console.log(player1.cards());
-	// console.log(player2.cards());
-	// console.log(middle.cards());
-
-	// takeTurn();
-	// takeTurn();
-	// takeTurn();
-	// takeTurn();
-
-
-
-
-
 });

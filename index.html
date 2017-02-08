@@ -17,11 +17,25 @@
 	</div>
 	<div class="gameScreen off">
 		<button type="button" id="quitGame">Quit</button>
+		<button type="button" id="resetGame">Reset</button>
 		<div id="myModal" class="modal">
 			<div class="modal-content">
 			    <span class="quit">&times;</span>
-			    <span class="close">&larr;</span>
+			    <span class="close">&#x2713;</span>
+				<p>Return to Home Menu?</p>
+			</div>
+		</div>
+		<div id="resetModal" class="modal">
+			<div class="modal-content">
+			    <span class="reset">&#x2713;</span>
+			    <span class="close">&times;</span>
 				<p>Restart Game?</p>
+			</div>
+		</div>
+		<div id="winModal" class="modal">
+			<div class="modal-content">
+			    <span class="nope">&times;</span>
+				<p id="winText"></p>
 			</div>
 		</div>
 		<div id="player2">
@@ -39,11 +53,11 @@
 			<div class="cardImg" id="p1c1"></div>
 			<div class="cardImg" id="p1c2"></div>
 		</div>
-		<div id="playerButtons">
-			Player Credits: <span id="credits">1000</span>
-			<button type="button" id="bet">Bet</button>
-			<button type="button" id="call">Call</button>
-		</div>
+	</div>
+	<div class="gameScreen off playerButtons">
+		<!-- Player Credits: <span id="credits">1000</span> -->
+		<button type="button" id="call">Call</button>
+		<div id="winText"></div>
 	</div>
 </body>
 </html>
