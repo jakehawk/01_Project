@@ -5,6 +5,7 @@ $(function(){
 	var i=0, j=0, x=0;
 	var playerNum = 1;
 	var player1, player2, middle;
+	var stageCount = 0;
 	var p1CardVals = [],
 		p1CardSuits = [],
 		p2CardVals = [],
@@ -147,8 +148,20 @@ $(function(){
 		$('#m1c4').html('<img src="card_images/back.png" alt="King of Spades" />');
 		$('#m1c5').html('<img src="card_images/back.png" alt="King of Spades" />');
 		takeTurn();
-
 	});
+
+	$('#stay').click(function() {
+		if (stageCount < 4)
+			takeTurn();
+		else{
+			var orderedP1 = p1CardVals.sort();
+			var orderedP2 = p2CardVals.sort();
+			winTest(orderedP1, orderedP2);
+		}
+	});
+	
+
+	//Modal Stuff
 	$('#quitGame').click(function() {
 		$('#myModal').css("display", "block");
 	});
@@ -161,6 +174,9 @@ $(function(){
 		// $('.gameScreen').toggleClass('off');
 		// $('.introScreen').toggleClass('off');
 	});
+
+
+
 	window.onclick = function(event){
 		if (event.target == $('#myModal')){
 			$('#myModal').css("display", "none");
@@ -274,6 +290,9 @@ $(function(){
 			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
 				player2.best.push(8)
 			middle.turn = true;
+			$('#m1c1').html(middle.card1Image());
+			$('#m1c2').html(middle.card2Image());
+			$('#m1c3').html(middle.card3Image());
  		} else if (middle.turn && !(middle.river)) {
 			//After Flop is revealed
 			p1CardVals.push(middle.val4);
@@ -342,6 +361,7 @@ $(function(){
 			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
 				player2.best.push(8)
 			middle.river = true;
+			$('#m1c4').html(middle.card4Image());
 		} else if (middle.river) {
 			//After River is revealed
 			p1CardVals.push(middle.val5);
@@ -409,12 +429,11 @@ $(function(){
 			}
 			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
 				player2.best.push(8)
-			winTest(orderedP1, orderedP2);
-		} else {
-			console.log('dom testing');
+			$('#m1c3').html(middle.card3Image());
 		}
 		console.log('P1 best: ' + player1.best)
 		console.log('P2 best: ' + player2.best)
+		stageCount++;
 	}
 
 	var pairTest = function(ordered, player, i) {

@@ -24,6 +24,8 @@ img {
 .player2,
 .middle {
 	float: left;
+	text-align: none;
+	display: inline-block;
 }
 .modal {
     display: none; /* Hidden by default */
