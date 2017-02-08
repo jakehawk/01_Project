@@ -100,7 +100,7 @@ $(function(){
 	    x++;
 	  }
 	}
-
+	//akls;dfj;aklsdfj
 	function getCard() {
 		var min = Math.ceil(0);
 		var max = Math.floor(deck.length - 1);
