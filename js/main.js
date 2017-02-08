@@ -3,6 +3,8 @@ $(function(){
 	var vals = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace'];
 	var deck = [];
 	var i=0, j=0, x=0;
+	var playerNum = 1;
+	var player1, player2, middle;
 	var p1CardVals = [],
 		p1CardSuits = [],
 		p2CardVals = [],
@@ -26,8 +28,8 @@ $(function(){
 		this.threes = [];
 		this.fours = [];
 		this.cards = function() {
-			return 'Player has a '+this.val1+' of '+this.suit1+
-				' and a '+this.val2+' of '+this.suit2;
+			return 'Player '+playerNum+' has a '+this.val1+' of '+this.suit1+
+				'\nand a '+this.val2+' of '+this.suit2;
 		}
 	}
 
@@ -72,16 +74,56 @@ $(function(){
 		return newCard;
 	}
 
-	var player1 = new Player(getCard(), 
-		getCard(), 
-		1000, true);
-	var player2 = new Player(getCard(),
-		getCard(), 
-		1000, false);
-	var middle = new Middle(getCard(), getCard(), 
-		getCard(), getCard(), getCard());
+	// var player1 = new Player(getCard(), 
+	// 	getCard(), 
+	// 	1000, true);
+	
+	// var player2 = new Player(getCard(),
+	// 	getCard(), 
+	// 	1000, false);
+	// var middle = new Middle(getCard(), getCard(), 
+	// 	getCard(), getCard(), getCard());
 
 
+/*=========== DOM Manipulation ==========================================*/
+	
+
+	$('#play').click(function() {
+		$('.introScreen').toggleClass('off');
+		$('.gameScreen').toggleClass('off');
+
+		player1 = new Player(getCard(), 
+			getCard(), 1000, true);
+		player2 = new Player(getCard(), 
+			getCard(), 1000, true);
+		middle = new Middle(getCard(), getCard(), 
+			getCard(), getCard(), getCard());
+		
+		$('#p1c1').text(player1.cards());
+		playerNum++;
+		$('#p2c1').text(player2.cards());
+		$('#m1c1').text(middle.cards());
+		takeTurn();
+
+	});
+	$('#quitGame').click(function() {
+		$('#myModal').css("display", "block");
+	});
+	$('.close').eq(0).click(function() {
+		$('#myModal').css("display", "none");
+	});
+	$('.quit').eq(0).click(function() {
+		$('#myModal').css("display", "none");
+		$('.gameScreen').toggleClass('off');
+		$('.introScreen').toggleClass('off');
+	});
+	$('window').click(function(){
+		if (event.target == $('#myModal')){
+			$('#myModal').css("display", "none");
+		}
+	});
+
+	
 
 
 
@@ -324,6 +366,8 @@ $(function(){
 			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
 				player2.best.push(8)
 			winTest(orderedP1, orderedP2);
+		} else {
+			console.log('dom testing');
 		}
 		console.log('P1 best: ' + player1.best)
 		console.log('P2 best: ' + player2.best)
@@ -353,6 +397,7 @@ $(function(){
 			}
 		}
 	}
+
 	var fourTest = function(ordered, player, i) {
 		//Four-of Check
 		if (ordered[i] === ordered[i+1] && 
@@ -455,6 +500,14 @@ $(function(){
 				} else {
 					console.log('It\'s a tie!');
 				}
+			} else if (p1Max === 0){
+				if (findHigh(ordered1) > findHigh(ordered2)){
+					console.log('P1 wins with '+wins[p1Max]);
+				} else if (findHigh(ordered1) < findHigh(ordered2)){
+					console.log('P2 wins with '+wins[p2Max]);
+				} else {
+					console.log('It\'s a tie!');
+				}
 			} else {
 				console.log('Someone probably wins, but idk who yet');
 			}
@@ -477,28 +530,17 @@ $(function(){
 		}
 		return Math.max(...temp);
 	}
-	console.log(player1.cards());
-	console.log(player2.cards());
-	console.log(middle.cards());
+	// console.log(player1.cards());
+	// console.log(player2.cards());
+	// console.log(middle.cards());
 
-	takeTurn();
-	takeTurn();
-	takeTurn();
-	takeTurn();
-	$('#test').click(function() {
-		if(!(middle.end))
-			takeTurn();
-	});
-	$('#test2').click(function() {
-		winTest()
-	});
+	// takeTurn();
+	// takeTurn();
+	// takeTurn();
+	// takeTurn();
 
 
 
 
-/*=========== DOM Manipulation ==========================================*/
-	$('#play').click(function() {
-		window.location.href = 'game.html';
-	});
 
 });

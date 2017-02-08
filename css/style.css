@@ -14,3 +14,60 @@ h1 {
 button {
 	display: block;
 }
+
+.player1,
+.player2,
+.middle {
+	color: rgb(230,225,255);
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.quit {
+    color: rgb(230, 60, 120);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close {
+    color: rgb(60, 230, 120);
+    float: left;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.quit:hover,
+.quit:focus,
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.off {
+	display: none;
+}
