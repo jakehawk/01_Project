@@ -138,6 +138,7 @@ $(function(){
 				threeTest(orderedP1, player1, i);
 				fourTest(orderedP1, player1, i);
 				fhTest(orderedP1, player1, i);
+				straightTest(orderedP1, player1, i);
 				//Flush Check
 				switch(p1CardSuits[i]) {
 					case 'Hearts':
@@ -157,11 +158,14 @@ $(function(){
 			if (p1HeartC >= 5 || p1SpadeC >= 5 || 
 				p1DiamondC >= 5 || p1ClubC >= 5)
 				player1.best.push(5);
+			if (player1.best.indexOf(5) !== -1 && player1.best.indexOf(4) !== -1)
+				player1.best.push(8)
 			for (i=0; i<orderedP2.length; i++) {
 				pairTest(orderedP2, player2, i);
 				threeTest(orderedP2, player2, i);
 				fourTest(orderedP2, player2, i);
 				fhTest(orderedP2, player2, i);
+				straightTest(orderedP2, player2, i);
 				//Flush Check
 				switch(p2CardSuits[i]) {
 					case 'Hearts':
@@ -181,7 +185,8 @@ $(function(){
 			if (p2HeartC >= 5 || p2SpadeC >= 5 || 
 				p2DiamondC >= 5 || p2ClubC >= 5)
 				player2.best.push(5);
-
+			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
+				player2.best.push(8)
 			middle.turn = true;
  		} else if (middle.turn && !(middle.river)) {
 			//After Flop is revealed
@@ -199,6 +204,7 @@ $(function(){
 				threeTest(orderedP1, player1, i);
 				fourTest(orderedP1, player1, i);
 				fhTest(orderedP1, player1, i);
+				straightTest(orderedP1, player1, i);
 				//Flush Check
 				switch(p1CardSuits[i]) {
 					case 'Hearts':
@@ -218,12 +224,15 @@ $(function(){
 			if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
 				p1DiamondC >= 5 || p1ClubC >= 5))
 				player1.best.push(5);
+			if (player1.best.indexOf(5) !== -1 && player1.best.indexOf(4) !== -1)
+				player1.best.push(8)
 			//Loop through p2 cards
 			for (i=0; i<orderedP2.length; i++) {
 				pairTest(orderedP2, player2, i);
 				threeTest(orderedP2, player2, i);
 				fourTest(orderedP2, player2, i);
 				fhTest(orderedP2, player2, i);
+				straightTest(orderedP2, player2, i);
 				//Flush Check
 				switch(p2CardSuits[i]) {
 					case 'Hearts':
@@ -244,6 +253,8 @@ $(function(){
 				p2DiamondC >= 5 || p2ClubC >= 5) {
 				player2.best.push(5);
 			}
+			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
+				player2.best.push(8)
 			middle.river = true;
 		} else if (middle.river) {
 			//After River is revealed
@@ -261,6 +272,7 @@ $(function(){
 				threeTest(orderedP1, player1, i);
 				fourTest(orderedP1, player1, i);
 				fhTest(orderedP1, player1, i);
+				straightTest(orderedP1, player1, i);
 				//Flush Check
 				switch(p1CardSuits[i]) {
 					case 'Hearts':
@@ -281,11 +293,14 @@ $(function(){
 				p1DiamondC >= 5 || p1ClubC >= 5) {
 				player1.best.push(5);
 			}
+			if (player1.best.indexOf(5) !== -1 && player1.best.indexOf(4) !== -1)
+				player1.best.push(8)
 			for (i=0; i<orderedP2.length; i++) {
 				pairTest(orderedP2, player2, i);
 				threeTest(orderedP2, player2, i);
 				fourTest(orderedP2, player2, i);
 				fhTest(orderedP2, player2, i);
+				straightTest(orderedP2, player2, i);
 				//Flush Check
 				switch(p2CardSuits[i]) {
 					case 'Hearts':
@@ -306,7 +321,8 @@ $(function(){
 				p2DiamondC >= 5 || p2ClubC >= 5) {
 				player2.best.push(5);
 			}
-
+			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
+				player2.best.push(8)
 			winTest(orderedP1, orderedP2);
 		}
 		console.log('P1 best: ' + player1.best)
@@ -373,9 +389,10 @@ $(function(){
 		for (i=0;i<temp.length;i++){
 			if (temp[i] === temp[i+1]-1 &&
 			temp[i] === temp[i+2]-2 &&
-			temp[i] === temp[i+3]-2 &&
-			temp[i] === temp[i+4]-2 &&
-			temp[i+4] != null){
+			temp[i] === temp[i+3]-3 &&
+			temp[i] === temp[i+4]-4 &&
+			temp[i+4] != null &&
+			player.best.indexOf(4) !== -1){
 				player.best.push(4);
 			}
 		}
