@@ -21,9 +21,10 @@ $(function(){
 		this.suit2 = card2.suit;
 		this.chips = chips;
 		this.turn = turn;
-		this.best = 0;
+		this.best = [0];
 		this.pairs = [];
 		this.threes = [];
+		this.fours = [];
 		this.cards = function() {
 			return 'Player has a '+this.val1+' of '+this.suit1+
 				' and a '+this.val2+' of '+this.suit2;
@@ -62,7 +63,7 @@ $(function(){
 	  }
 	}
 
-	function getCard(deck) {
+	function getCard() {
 		var min = Math.ceil(0);
 		var max = Math.floor(deck.length - 1);
 		var rand = Math.floor(Math.random() * (max - min)) + min;
@@ -71,14 +72,14 @@ $(function(){
 		return newCard;
 	}
 
-	var player1 = new Player(getCard(deck), 
-		getCard(deck), 
+	var player1 = new Player(getCard(), 
+		getCard(), 
 		1000, true);
-	var player2 = new Player(getCard(deck),
-		getCard(deck), 
+	var player2 = new Player(getCard(),
+		getCard(), 
 		1000, false);
-	var middle = new Middle(getCard(deck), getCard(deck), 
-		getCard(deck), getCard(deck), getCard(deck));
+	var middle = new Middle(getCard(), getCard(), 
+		getCard(), getCard(), getCard());
 
 
 
@@ -102,17 +103,13 @@ $(function(){
 			p2CardSuits.push(player2.suit2);
 			console.log('Start!');
 			//Pair Check
-			if (p1CardVals[0] === p1CardVals[1] && 
-				player1.best < 1){
-				player1.best = 1;
+			if (p1CardVals[0] === p1CardVals[1]){
+				player1.best.push(1);
 				player1.pairs.push(p1CardVals[1]);
-				console.log('pair found');
 			}
-			if (p2CardVals[0] === p2CardVals[1] && 
-				player2.best < 1){
-				player2.best =1;
+			if (p2CardVals[0] === p2CardVals[1]){
+				player2.best.push(1);
 				player2.pairs.push(p2CardVals[1]);
-				console.log('found a second pair');
 			}
 			middle.flop = true;
 		} else if (middle.flop && !(middle.turn)) {
@@ -157,10 +154,9 @@ $(function(){
 						break;
 				}
 			}
-			if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
-				p1DiamondC >= 5 || p1ClubC >= 5) && 
-				player1.best < 5)
-				player1.best = 5;
+			if (p1HeartC >= 5 || p1SpadeC >= 5 || 
+				p1DiamondC >= 5 || p1ClubC >= 5)
+				player1.best.push(5);
 			for (i=0; i<orderedP2.length; i++) {
 				pairTest(orderedP2, player2, i);
 				threeTest(orderedP2, player2, i);
@@ -183,9 +179,8 @@ $(function(){
 				}
 			}
 			if (p2HeartC >= 5 || p2SpadeC >= 5 || 
-				p2DiamondC >= 5 || p2ClubC >= 5 && 
-				player2.best < 5)
-				player2.best = 5;
+				p2DiamondC >= 5 || p2ClubC >= 5)
+				player2.best.push(5);
 
 			middle.turn = true;
  		} else if (middle.turn && !(middle.river)) {
@@ -221,9 +216,8 @@ $(function(){
 				}
 			}
 			if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
-				p1DiamondC >= 5 || p1ClubC >= 5) && 
-				player1.best < 5)
-				player1.best = 5;
+				p1DiamondC >= 5 || p1ClubC >= 5))
+				player1.best.push(5);
 			//Loop through p2 cards
 			for (i=0; i<orderedP2.length; i++) {
 				pairTest(orderedP2, player2, i);
@@ -246,10 +240,9 @@ $(function(){
 						break;
 				}
 			}
-			if ((p2HeartC >= 5 || p2SpadeC >= 5 || 
-				p2DiamondC >= 5 || p2ClubC >= 5) && 
-				player2.best < 5) {
-				player2.best = 5;
+			if (p2HeartC >= 5 || p2SpadeC >= 5 || 
+				p2DiamondC >= 5 || p2ClubC >= 5) {
+				player2.best.push(5);
 			}
 			middle.river = true;
 		} else if (middle.river) {
@@ -261,7 +254,7 @@ $(function(){
 			var orderedP1 = p1CardVals.sort();
 			var orderedP2 = p2CardVals.sort();
 			var straight = p1CardVals;
-			console.log('Ordered: '+orderedP1);
+
 			console.log('River!');
 			for (i=0; i<orderedP1.length; i++) {
 				pairTest(orderedP1, player1, i);
@@ -284,10 +277,9 @@ $(function(){
 						break;
 				}
 			}
-			if ((p1HeartC >= 5 || p1SpadeC >= 5 || 
-				p1DiamondC >= 5 || p1ClubC >= 5) && 
-				player1.best < 5) {
-				player1.best = 5;
+			if (p1HeartC >= 5 || p1SpadeC >= 5 || 
+				p1DiamondC >= 5 || p1ClubC >= 5) {
+				player1.best.push(5);
 			}
 			for (i=0; i<orderedP2.length; i++) {
 				pairTest(orderedP2, player2, i);
@@ -310,13 +302,12 @@ $(function(){
 						break;
 				}
 			}
-			if ((p2HeartC >= 5 || p2SpadeC >= 5 || 
-				p2DiamondC >= 5 || p2ClubC >= 5) && 
-				player2.best < 5) {
-				player2.best = 5;
+			if (p2HeartC >= 5 || p2SpadeC >= 5 || 
+				p2DiamondC >= 5 || p2ClubC >= 5) {
+				player2.best.push(5);
 			}
 
-			middle.end = true;
+			winTest(orderedP1, orderedP2);
 		}
 		console.log('P1 best: ' + player1.best)
 		console.log('P2 best: ' + player2.best)
@@ -325,11 +316,11 @@ $(function(){
 	var pairTest = function(ordered, player, i) {
 		if (ordered[i] === ordered[i+1] && ordered[i+1] != -1) {
 			if (player.pairs.indexOf(ordered[i]) === -1) {
-				if (player.best === 0){
-					player.best = 1;
+				if (player.best.indexOf(1) === -1){
+					player.best.push(1);
 					player.pairs.push(ordered[i]);
-				} else if (player.best === 1 || player.best === 2) {
-					player.best = 2;
+				} else if (player.best.indexOf(1) !== -1) {
+					player.best.push(2);
 					player.pairs.push(ordered[i]);
 				}
 			} 
@@ -340,9 +331,8 @@ $(function(){
 		if (ordered[i] === ordered[i+1] && 
 			ordered[i] === ordered[i+2] && 
 			ordered[i+2] != null) {
-			if (player.threes.indexOf(ordered[i]) === -1 &&
-				player.best<3){
-				player.best = 3;
+			if (player.threes.indexOf(ordered[i]) === -1){
+				player.best.push(3);
 				player.threes.push(ordered[i])
 			}
 		}
@@ -350,43 +340,125 @@ $(function(){
 	var fourTest = function(ordered, player, i) {
 		//Four-of Check
 		if (ordered[i] === ordered[i+1] && 
-			ordered[i] === ordered[i+2] &&
-			ordered[i] === ordered[i+3] &&
-			ordered[i+3] != null) {
-			if (player.best < 7)
-				player.best = 7;
+		ordered[i] === ordered[i+2] &&
+		ordered[i] === ordered[i+3] &&
+		ordered[i+3] != null) {
+			player.best.push(7);
+			player.fours.push(ordered[i])
 		}
 	}
 
 	var fhTest = function(ordered, player, i) {
-		if (player.threes[0] != null && player.pairs.length > 1 && player.best < 6){
-			player.best = 6;
+		if (player.threes[0] != null && player.pairs.length > 1){
+			player.best.push(6);
 		} 
 	}
 
 	var straightTest = function(ordered, player, i) {
-
+		var temp = [];
+		for (i=0;i<ordered.length;i++) {
+			if (ordered[i] === 'Jack')
+				temp.push(11);
+			else if (ordered[i] === 'Queen')
+				temp.push(12);
+			else if (ordered[i] === 'King')
+				temp.push(13);
+			else if (ordered[i] === 'Ace') {
+				temp.push(14);
+				temp.push(1);
+			} else
+				temp.push(ordered[i])
+		}
+		temp.sort(function(a, b){return a-b});
+		for (i=0;i<temp.length;i++){
+			if (temp[i] === temp[i+1]-1 &&
+			temp[i] === temp[i+2]-2 &&
+			temp[i] === temp[i+3]-2 &&
+			temp[i] === temp[i+4]-2 &&
+			temp[i+4] != null){
+				player.best.push(4);
+			}
+		}
 	}
 
-	var winTest = function() {
-		var wins = ['a High Card', 'a Pair', 'two Pairs', 'a Three of a Kind', 'a Straight!', 
-			'a Flush!', 'a Full House!', 'a Straight Flush!!', 'a Royal Flush!!!!'];
-		if (player1.best > player2.best){
-			console.log('P1 wins with '+wins[player1.best]);
+	var winTest = function(ordered1, ordered2) {
+		var wins = ['a High Card', 'a Pair', 'two Pairs', 'Three of a Kind', 'a Straight!', 'a Flush!', 
+		'a Full House!', 'Four of a Kind', 'a Straight Flush!!', 'a Royal Flush!!!!'];
+		var p1Max = Math.max(...player1.best), p2Max = Math.max(...player2.best);
+		if (p1Max > p2Max){
+			console.log('P1 wins with '+wins[p1Max]);
 		}
-		else if (player1.best < player2.best){
-			console.log('P2 wins with '+wins[player2.best]);
+		else if (p1Max < p2Max){
+			console.log('P2 wins with '+wins[p2Max]);
 		}
-		else if (player1.best === player2.best) {
-			if (vals.indexOf(player1.pairs) > vals.indexOf(player2.pairs)){
-				console.log('P1 wins!');
-			}
-			else if (vals.indexOf(player1.pairs) < vals.indexOf(player2.pairs)){
-				console.log('P2 wins!');
+		else if (p1Max === p2Max) {
+			if (p1Max === 1){
+				if (player1.pairs[0] > player2.pairs[0]){
+					console.log('P1 wins with '+wins[p1Max]);
+				} else if (player1.pairs[0] < player2.pairs[0]){
+					console.log('P2 wins with '+wins[p2Max]);
+				} else {
+					if (findHigh(ordered1) > findHigh(ordered2)){
+						console.log('P1 wins with '+wins[p1Max]);
+					} else if (findHigh(ordered1) < findHigh(ordered2)){
+						console.log('P2 wins with '+wins[p2Max]);
+					} else {
+						console.log('It\'s a tie!');
+					}
+				}
+			} else if (p1Max === 2){
+				if (player1.pairs[0] > player2.pairs[0] && 
+					player1.pairs[1] > player2.pairs[1]){
+					console.log('P1 wins with '+wins[p1Max]);
+				} else if (player1.pairs[0] < player2.pairs[0] &&
+					player1.pairs[1] < player2.pairs[1]){
+					console.log('P2 wins with '+wins[p2Max]);
+				} else {
+					if (findHigh(ordered1) > findHigh(ordered2)){
+						console.log('P1 wins with '+wins[p1Max]);
+					} else if (findHigh(ordered1) < findHigh(ordered2)){
+						console.log('P2 wins with '+wins[p2Max]);
+					} else {
+						console.log('It\'s a tie!');
+					}
+				}
+			} else if (p1Max === 3){
+				if (player1.threes[0] > player2.threes[0]) {
+					console.log('P1 wins with '+wins[p1Max]);
+				} else if (player1.threes[0] < player2.threes[0]) {
+					console.log('P2 wins with '+wins[p2Max]);
+				} else {
+					console.log('It\'s a tie!');
+				}
+			} else if (p1Max === 7){
+				if (player1.fours[0] > player2.fours[0]) {
+					console.log('P1 wins with '+wins[p1Max]);
+				} else if (player1.fours[0] < player2.fours[0]) {
+					console.log('P2 wins with '+wins[p2Max]);
+				} else {
+					console.log('It\'s a tie!');
+				}
 			} else {
-				console.log('It\'s a tie');
+				console.log('Someone probably wins, but idk who yet');
 			}
 		}
+	}
+
+	var findHigh = function(arr) {
+		var temp = []
+		for (i=0;i<arr.length;i++) {
+			if (arr[i] === 'Jack')
+				temp.push(11);
+			else if (arr[i] === 'Queen')
+				temp.push(12);
+			else if (arr[i] === 'King')
+				temp.push(13);
+			else if (arr[i] === 'Ace')
+				temp.push(14);
+			else
+				temp.push(arr[i])
+		}
+		return Math.max(...temp);
 	}
 	console.log(player1.cards());
 	console.log(player2.cards());
@@ -396,7 +468,6 @@ $(function(){
 	takeTurn();
 	takeTurn();
 	takeTurn();
-	winTest();
 	$('#test').click(function() {
 		if(!(middle.end))
 			takeTurn();
