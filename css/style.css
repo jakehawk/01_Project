@@ -6,6 +6,10 @@ body {
 	text-align: center;
 }
 
+div {
+	display: inline-block;
+}
+
 h1 {
 	color: rgb(230,225,255);
 	font-size: 3rem;
@@ -13,19 +17,24 @@ h1 {
 
 button {
 	display: block;
+	margin: 0 auto;
 }
 
 img {
-	width: 75px;
-	height: 100px;
+	width: 120px;
+	height: 160px;
+	display: inline;	
 }
-
+.gameScreen {
+	height: 550px;
+	width: 800px;
+}
 .player1,
 .player2,
 .middle {
 	float: left;
 	text-align: none;
-	display: inline-block;
+	display: block;
 }
 .modal {
     display: none; /* Hidden by default */
@@ -76,4 +85,8 @@ img {
 
 .off {
 	display: none;
+}
+
+#quitGame {
+	float: left;
 }

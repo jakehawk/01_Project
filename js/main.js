@@ -35,12 +35,12 @@ $(function(){
 		this.card1Image = function() {
 			return '<img src="card_images/'+
 				this.val1+'_of_'+this.suit1.toLowerCase()+
-				'.png" alt="King of Spades" />'
+				'.png" alt="'+this.val1+' of '+this.suit1+'" />'
 		}
 		this.card2Image = function() {
 			return '<img src="card_images/'+
 				this.val2+'_of_'+this.suit2.toLowerCase()+
-				'.png" alt="King of Spades" />'
+				'.png" alt="'+this.val2+' of '+this.suit2+'" />'
 		}
 	}
 
@@ -69,27 +69,27 @@ $(function(){
 		this.card1Image = function() {
 			return '<img src="card_images/'+
 				this.val1+'_of_'+this.suit1.toLowerCase()+
-				'.png" alt="King of Spades" />'
+				'.png" alt="'+this.val1+' of '+this.suit1+'" />'
 		}
 		this.card2Image = function() {
 			return '<img src="card_images/'+
 				this.val2+'_of_'+this.suit2.toLowerCase()+
-				'.png" alt="King of Spades" />'
+				'.png" alt="'+this.val2+' of '+this.suit2+'" />'
 		}
 		this.card3Image = function() {
 			return '<img src="card_images/'+
 				this.val3+'_of_'+this.suit3.toLowerCase()+
-				'.png" alt="King of Spades" />'
+				'.png" alt="'+this.val3+' of '+this.suit3+'" />'
 		}
 		this.card4Image = function() {
 			return '<img src="card_images/'+
 				this.val4+'_of_'+this.suit4.toLowerCase()+
-				'.png" alt="King of Spades" />'
+				'.png" alt="'+this.val4+' of '+this.suit4+'" />'
 		}
 		this.card5Image = function() {
 			return '<img src="card_images/'+
 				this.val5+'_of_'+this.suit5.toLowerCase()+
-				'.png" alt="King of Spades" />'
+				'.png" alt="'+this.val5+' of '+this.suit5+'" />'
 		}
 	}
 
@@ -142,15 +142,15 @@ $(function(){
 		$('#p1c2').html(player1.card2Image());
 		$('#p2c1').html(player2.card1Image());
 		$('#p2c2').html(player2.card2Image());
-		$('#m1c1').html('<img src="card_images/back.png" alt="King of Spades" />');
-		$('#m1c2').html('<img src="card_images/back.png" alt="King of Spades" />');
-		$('#m1c3').html('<img src="card_images/back.png" alt="King of Spades" />');
-		$('#m1c4').html('<img src="card_images/back.png" alt="King of Spades" />');
-		$('#m1c5').html('<img src="card_images/back.png" alt="King of Spades" />');
+		$('#m1c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c2').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c3').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c4').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c5').html('<img src="card_images/back.png" alt="Card Back" />');
 		takeTurn();
 	});
 
-	$('#stay').click(function() {
+	$('#call').click(function() {
 		if (stageCount < 4)
 			takeTurn();
 		else{
@@ -429,7 +429,7 @@ $(function(){
 			}
 			if (player2.best.indexOf(5) !== -1 && player2.best.indexOf(4) !== -1)
 				player2.best.push(8)
-			$('#m1c3').html(middle.card3Image());
+			$('#m1c5').html(middle.card5Image());
 		}
 		console.log('P1 best: ' + player1.best)
 		console.log('P2 best: ' + player2.best)
