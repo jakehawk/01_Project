@@ -47,6 +47,9 @@ $(function(){
 			this.totalBet = 0;
 			this.chips += middle.pot;
 		}
+		this.lose = function() {
+			this.totalBet = 0;
+		}
 	}
 
 	function Middle(card1, card2, card3, card4, card5) {
@@ -106,7 +109,7 @@ $(function(){
 	    x++;
 	  }
 	}
-	//akls;dfj;aklsdfj
+
 	function getCard() {
 		var max = Math.floor(deck.length - 1);
 		var rand = Math.floor(Math.random() * max);
@@ -115,8 +118,57 @@ $(function(){
 		return newCard;
 	}
 
+/*=========== Buttons  ==================================================*/	
 
-/*=========== DOM Manipulation ==========================================*/
+	$('#play').click(function() {
+		$('.introScreen').toggleClass('off');
+		$('.gameScreen').toggleClass('off');
+		$('#playerButtons').toggleClass('off');
+
+		player1 = new Player(getCard(), 
+			getCard(), 1000, true, 1);
+		player2 = new Player(getCard(), 
+			getCard(), 1000, true, 2);
+		middle = new Middle(getCard(), getCard(), 
+			getCard(), getCard(), getCard());
+		
+		$('#p1c1').html(player1.card1Image());
+		$('#p1c2').html(player1.card2Image());
+		$('#p2c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#p2c2').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c2').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c3').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c4').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c5').html('<img src="card_images/back.png" alt="Card Back" />');
+		takeTurn();
+	});
+
+	$('#bet25').click(function() {
+		bet(player1, 25);
+		console.log(player1.totalBet);
+		badAI();
+		if(player1.totalBet === player2.totalBet)
+			buttonTurn();
+	});
+
+	$('#bet100').click(function() {
+		bet(player1, 100);
+		console.log(player1.totalBet);
+		badAI();
+		buttonTurn();
+	});
+
+	$('#call').click(function() {
+		badAI();
+		buttonTurn();
+	});
+
+	$('#fold').click(function() {
+		fold(player1);
+	})
+
+/*=========== Button Functions ========================================*/
 	
 	var $player1 = $('player1');
 	var $player2 = $('player2');
@@ -134,7 +186,6 @@ $(function(){
 			var orderedP1 = p1CardVals.sort();
 			var orderedP2 = p2CardVals.sort();
 			var temp = winTest(orderedP1, orderedP2);
-			$('#winModal').css("display", "block");
 			if (temp === 1){
 				$('#winText').text('Player 1 wins with '+wins[p1Max]);
 				player1.win();
@@ -150,14 +201,14 @@ $(function(){
 			} else {
 				$('#winText').text('It\'s a draw!');
 				draw();
-
+				$('.p1Score').text('Credits: '+player1.chips);
+				$('.p2Score').text('Credits: '+player2.chips);
 			}
-			$('.newGame').click(function() {
-				$('#winModal').css("display", "none");
-			});
+			$('#winModal').css("display", "block");
 			$('.nope').click(function() {
 				$('#winModal').css("display", "none");
 			});
+			$('.playerButtons').attr('disabled','disabled');
 		}
 	}
 
@@ -184,11 +235,13 @@ $(function(){
 			}
 		}	
 		player1 = new Player(getCard(), 
-			getCard(), player1.chips, true);
+			getCard(), player1.chips, true, 1);
 		player2 = new Player(getCard(), 
-			getCard(), player2.chips, false);
+			getCard(), player2.chips, false, 2);
 		middle = new Middle(getCard(), getCard(), 
 			getCard(), getCard(), getCard());
+		$('.p1Score').text('Credits: '+player1.chips);
+		$('.p2Score').text('Credits: '+player2.chips);
 		
 		$('#p1c1').html(player1.card1Image());
 		$('#p1c2').html(player1.card2Image());
@@ -200,61 +253,20 @@ $(function(){
 		$('#m1c4').html('<img src="card_images/back.png" alt="Card Back" />');
 		$('#m1c5').html('<img src="card_images/back.png" alt="Card Back" />');
 		takeTurn();
+
+		$('.playerButtons').removeAttr('disabled');
 	}
-
-
-	$('#play').click(function() {
-		$('.introScreen').toggleClass('off');
-		$('.gameScreen').toggleClass('off');
-		$('#playerButtons').toggleClass('off');
-
-		player1 = new Player(getCard(), 
-			getCard(), 1000, true, 1);
-		player2 = new Player(getCard(), 
-			getCard(), 1000, true, 2);
-		middle = new Middle(getCard(), getCard(), 
-			getCard(), getCard(), getCard());
-		
-		$('#p1c1').html(player1.card1Image());
-		$('#p1c2').html(player1.card2Image());
-		$('#p2c1').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#p2c2').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c1').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c2').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c3').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c4').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c5').html('<img src="card_images/back.png" alt="Card Back" />');
-		takeTurn();
-	});
 
 	var bet = function(player, amt) {
 		player.totalBet += amt;
 		player.chips -= amt;
 		middle.pot += amt;
 		$('.p'+player.num+'Score').text('Credits: '+player.chips);
-	}
-	
-	$('#bet25').click(function() {
-		bet(player1, 25);
-		console.log(player1.totalBet);
-		badAI();
-		buttonTurn();
-	});
+	}	
 
-	$('#bet100').click(function() {
-		bet(player1, 100);
-		console.log(player1.totalBet);
-		badAI();
-		buttonTurn();
-	});
 
-	$('#call').click(function() {
-		badAI();
-		buttonTurn();
-	});
-	
+/*=========== Modal Stuff ===============================================*/
 
-	//Modal Stuff
 	$('#quitGame').click(function() {
 		$('#myModal').css("display", "block");
 	});
@@ -270,6 +282,7 @@ $(function(){
 
 	$('#resetGame').click(function() {
 		newGame();
+		$('.playerButtons').removeAttr('disabled');
 	});
 
 
@@ -291,32 +304,81 @@ $(function(){
 	  return Math.floor(Math.random() * (max - min)) + min;
 	}
 
+	var fold = function(player) {
+		$('#p2c1').html(player2.card1Image());
+		$('#p2c2').html(player2.card2Image());
+
+		$('#m1c1').html(middle.card1Image());
+		$('#m1c2').html(middle.card2Image());
+		$('#m1c3').html(middle.card3Image());
+		$('#m1c4').html(middle.card4Image());
+		$('#m1c5').html(middle.card5Image());
+
+		if(player.num === 1){
+			player2.win();
+			player1.lose();
+			middle.pot=0;
+			$('.p2Score').text('Credits: '+player2.chips);
+			$('#winText').text('Player 1 folds. Player 2 wins!');
+			$('#winModal').css("display", "block");
+			$('.nope').click(function() {
+				$('#winModal').css("display", "none");
+			});
+		} else if(player.num === 2){
+			player1.win();
+			player2.lose();
+			middle.pot = 0;
+			$('.p1Score').text('Credits: '+player1.chips);
+			$('#winText').text('Player 2 folds. Player 1 wins!')
+			$('#winModal').css("display", "block");
+			$('.nope').click(function() {
+				$('#winModal').css("display", "none");
+			});
+		}
+	}
 	var badAI = function() {
 		var rand = getRandomInt(1, 100);
 		var max = Math.max(...player2.best);
-		if(max >= 6){
-			bet(player2, 100);
-		} else if(max === 5) {
-			if(rand > 25)
+		var p1Bet = player1.totalBet, p2Bet = player2.totalBet;
+		var betDiff = p1Bet - p2Bet;
+		
+
+		if(p1Bet === p2Bet) {
+			if(max >= 6){
 				bet(player2, 100);
-			else
-				bet(player2, 25);
-		} else if(max === 4) {
-			if(rand > 40)
-				bet(player2, 100);
-			else
-				bet(player2, 25);
-		} else if(max === 3) {
-			if(rand > 70)
-				bet(player2, 100);
-			else
-				bet(player2, 25);
-		} else if(max === 2) {
-			if(rand > 25)
-				bet(player2, 25);
-		} else if(max === 1) {
-			if(rand > 50)
-				bet(player2, 25);
+			} else if(max === 5) {
+				if(rand > 25)
+					bet(player2, 100);
+				else
+					bet(player2, 25);
+			} else if(max === 4) {
+				if(rand > 40)
+					bet(player2, 100);
+				else
+					bet(player2, 25);
+			} else if(max === 3) {
+				if(rand > 70)
+					bet(player2, 100);
+				else
+					bet(player2, 25);
+			} else if(max === 2) {
+				if(rand > 25)
+					bet(player2, 25);
+			} else if(max === 1) {
+				if(rand > 50)
+					bet(player2, 25);
+			}
+		} else if(p1Bet > p2Bet) {
+			if(max > 4)
+				bet(player2, betDiff);
+			else if(betDiff === 25)
+				bet(player2, betDiff);
+			else if(betDiff === 100) {
+				if(rand > 50)
+					bet(player2, betDiff)
+				else
+					fold(player2);
+			}
 		}
 	}
 	var takeTurn = function() {
