@@ -18,6 +18,8 @@ $(function(){
 
 	function Player(card1, card2, chips, turn, num) {
 		this.val1 = card1.val;
+		//this.valArr = [card1.val, card2.val];
+		//player1.valArr.push(card3.val)
 		this.suit1 = card1.suit;
 		this.val2 = card2.val;
 		this.suit2 = card2.suit;
@@ -144,16 +146,16 @@ $(function(){
 		takeTurn();
 	});
 
-	$('#bet101').click(function() {
-		bet(player1, 101);
+	$('#bet100').click(function() {
+		bet(player1, 100);
 		console.log(player1.totalBet);
 		badAI();
 		if(player1.totalBet === player2.totalBet)
 			buttonTurn();
 	});
 
-	$('#bet500').click(function() {
-		bet(player1, 500);
+	$('#bet250').click(function() {
+		bet(player1, 250);
 		console.log(player1.totalBet);
 		badAI();
 		buttonTurn();
@@ -262,6 +264,7 @@ $(function(){
 		player.chips -= amt;
 		middle.pot += amt;
 		$('.p'+player.num+'Score').text('Credits: '+player.chips);
+		$('#pot').text('Pot: '+middle.pot);
 	}	
 
 
@@ -283,6 +286,7 @@ $(function(){
 	$('#resetGame').click(function() {
 		newGame();
 		$('.playerButtons').removeAttr('disabled');
+		$('#pot').text('Pot: 0');
 	});
 
 
@@ -339,7 +343,7 @@ $(function(){
 	}
 
 	var badAI = function() {
-		var rand = getRandomInt(1, 500);
+		var rand = getRandomInt(1, 250);
 		var max = Math.max(...player2.best);
 		var p1Bet = player1.totalBet, p2Bet = player2.totalBet;
 		var betDiff = p1Bet - p2Bet;
@@ -347,35 +351,35 @@ $(function(){
 
 		if(p1Bet === p2Bet) {
 			if(max >= 6){
-				bet(player2, 500);
+				bet(player2, 250);
 			} else if(max === 5) {
 				if(rand > 25)
-					bet(player2, 500);
+					bet(player2, 250);
 				else
-					bet(player2, 101);
+					bet(player2, 100);
 			} else if(max === 4) {
 				if(rand > 40)
-					bet(player2, 500);
+					bet(player2, 250);
 				else
-					bet(player2, 101);
+					bet(player2, 100);
 			} else if(max === 3) {
 				if(rand > 70)
-					bet(player2, 500);
+					bet(player2, 250);
 				else
-					bet(player2, 101);
+					bet(player2, 100);
 			} else if(max === 2) {
 				if(rand > 25)
-					bet(player2, 101);
+					bet(player2, 100);
 			} else if(max === 1) {
 				if(rand > 50)
-					bet(player2, 101);
+					bet(player2, 100);
 			}
 		} else if(p1Bet > p2Bet) {
 			if(max > 4)
 				bet(player2, betDiff);
-			else if(betDiff === 101)
+			else if(betDiff === 100)
 				bet(player2, betDiff);
-			else if(betDiff === 500) {
+			else if(betDiff === 250) {
 				if(rand > 50)
 					bet(player2, betDiff)
 				else
@@ -383,7 +387,7 @@ $(function(){
 			}
 		}
 	}
-	
+
 	var takeTurn = function() {
 		var p1SpadeC=0, p1ClubC=0, p1HeartC=0, p1DiamondC=0,
 		p2SpadeC=0, p2ClubC=0, p2HeartC=0, p2DiamondC=0;
@@ -772,19 +776,19 @@ $(function(){
 		}
 	}
 
-	var findHigh = function(arr) {
+	var findHigh = function(orderedArr) {
 		var temp = []
-		for (i=0;i<arr.length;i++) {
-			if (arr[i] === 'Jack')
+		for (i=0;i<orderedArr.length;i++) {
+			if (orderedArr[i] === 'Jack')
 				temp.push(11);
-			else if (arr[i] === 'Queen')
+			else if (orderedArr[i] === 'Queen')
 				temp.push(12);
-			else if (arr[i] === 'King')
+			else if (orderedArr[i] === 'King')
 				temp.push(13);
-			else if (arr[i] === 'Ace')
+			else if (orderedArr[i] === 'Ace')
 				temp.push(14);
 			else
-				temp.push(arr[i])
+				temp.push(orderedArr[i])
 		}
 		return Math.max(...temp);
 	}

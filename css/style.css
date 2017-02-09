@@ -46,6 +46,10 @@ img {
 	font-size: 30px;
 	color: rgb(230, 225, 255);
 }
+._pot {
+	font-size: 20px;
+	color: rgb(255, 100, 50);
+}
 #credits {
 	color: rgb(230, 225, 255);
 }
