@@ -16,17 +16,19 @@ $(function(){
 		this.val = val;
 	}
 
-	function Player(card1, card2, chips, turn) {
+	function Player(card1, card2, chips, turn, num) {
 		this.val1 = card1.val;
 		this.suit1 = card1.suit;
 		this.val2 = card2.val;
 		this.suit2 = card2.suit;
 		this.chips = chips;
+		this.totalBet = 0;
 		this.turn = turn;
 		this.best = [0];
 		this.pairs = [];
 		this.threes = [];
 		this.fours = [];
+		this.num = num;
 		this.cards = function() {
 			return 'Player '+playerNum+' has a '+this.val1+' of '+this.suit1+
 				'\nand a '+this.val2+' of '+this.suit2;
@@ -40,6 +42,10 @@ $(function(){
 			return '<img src="card_images/'+
 				this.val2+'_of_'+this.suit2.toLowerCase()+
 				'.png" alt="'+this.val2+' of '+this.suit2+'" />'
+		}
+		this.win = function() {
+			this.totalBet = 0;
+			this.chips += middle.pot;
 		}
 	}
 
@@ -58,6 +64,7 @@ $(function(){
 		this.turn = false;
 		this.river = false;
 		this.end = false;
+		this.pot = 0;
 		this.cards = function() {
 			console.log('c1: '+this.val1+' of '+this.suit1);
 			console.log('c2: '+this.val2+' of '+this.suit2);
@@ -115,15 +122,96 @@ $(function(){
 	var $player2 = $('player2');
 	var $middle = $('middle');
 
+	var buttonTurn = function() {
+		var wins = ['a High Card', 'a Pair', 'two Pairs', 'Three of a Kind', 'a Straight!', 'a Flush!', 
+		'a Full House!', 'Four of a Kind', 'a Straight Flush!!', 'a Royal Flush!!!!'];
+		var p1Max = Math.max(...player1.best), p2Max = Math.max(...player2.best);
+		if (stageCount < 4)
+			takeTurn();
+		else{
+			$('#p2c1').html(player2.card1Image());
+			$('#p2c2').html(player2.card2Image());
+			var orderedP1 = p1CardVals.sort();
+			var orderedP2 = p2CardVals.sort();
+			var temp = winTest(orderedP1, orderedP2);
+			$('#winModal').css("display", "block");
+			if (temp === 1){
+				$('#winText').text('Player 1 wins with '+wins[p1Max]);
+				player1.win();
+				player2.lose();
+				middle.pot = 0;
+				$('.p1Score').text('Credits: '+player1.chips);
+			} else if (temp === 0){
+				$('#winText').text('Player 2 wins with '+wins[p2Max]);
+				player2.win();
+				player1.lose();
+				middle.pot = 0;
+				$('.p2Score').text('Credits: '+player2.chips);
+			} else {
+				$('#winText').text('It\'s a draw!');
+				draw();
+
+			}
+			$('.newGame').click(function() {
+				$('#winModal').css("display", "none");
+			});
+			$('.nope').click(function() {
+				$('#winModal').css("display", "none");
+			});
+		}
+	}
+
+	var draw = function() {
+		player1.chips += player1.totalBet;
+		player2.chips += player2.totalBet;
+		player1.totalBet = 0;
+		player2.totalBet = 0;
+		middle.pot = 0;
+	}
+
+	var newGame = function() {
+		deck = [];
+		x = 0;
+		stageCount = 0;
+		p1CardVals = [];
+		p1CardSuits = [];
+		p2CardVals = [];
+		p2CardSuits = [];
+		for (i=0; i<vals.length; i++) {
+			for (j=0; j<suits.length; j++) {
+		    	deck[x] = new Card(suits[j], vals[i]);
+		    	x++;
+			}
+		}	
+		player1 = new Player(getCard(), 
+			getCard(), player1.chips, true);
+		player2 = new Player(getCard(), 
+			getCard(), player2.chips, false);
+		middle = new Middle(getCard(), getCard(), 
+			getCard(), getCard(), getCard());
+		
+		$('#p1c1').html(player1.card1Image());
+		$('#p1c2').html(player1.card2Image());
+		$('#p2c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#p2c2').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c1').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c2').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c3').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c4').html('<img src="card_images/back.png" alt="Card Back" />');
+		$('#m1c5').html('<img src="card_images/back.png" alt="Card Back" />');
+		takeTurn();
+	}
+
+
 	$('#play').click(function() {
 		$('.introScreen').toggleClass('off');
 		$('.gameScreen').toggleClass('off');
 		$('#playerButtons').toggleClass('off');
 
 		player1 = new Player(getCard(), 
-			getCard(), 1000, true);
+			getCard(), 1000, true, 1);
 		player2 = new Player(getCard(), 
-			getCard(), 1000, true);
+			getCard(), 1000, true, 2);
 		middle = new Middle(getCard(), getCard(), 
 			getCard(), getCard(), getCard());
 		
@@ -139,33 +227,30 @@ $(function(){
 		takeTurn();
 	});
 
+	var bet = function(player, amt) {
+		player.totalBet += amt;
+		player.chips -= amt;
+		middle.pot += amt;
+		$('.p'+player.num+'Score').text('Credits: '+player.chips);
+	}
+	
+	$('#bet25').click(function() {
+		bet(player1, 25);
+		console.log(player1.totalBet);
+		badAI();
+		buttonTurn();
+	});
+
+	$('#bet100').click(function() {
+		bet(player1, 100);
+		console.log(player1.totalBet);
+		badAI();
+		buttonTurn();
+	});
+
 	$('#call').click(function() {
-		var wins = ['a High Card', 'a Pair', 'two Pairs', 'Three of a Kind', 'a Straight!', 'a Flush!', 
-		'a Full House!', 'Four of a Kind', 'a Straight Flush!!', 'a Royal Flush!!!!'];
-		var p1Max = Math.max(...player1.best), p2Max = Math.max(...player2.best);
-		if (stageCount < 4)
-			takeTurn();
-		else{
-			$('#p2c1').html(player2.card1Image());
-			$('#p2c2').html(player2.card2Image());
-			var orderedP1 = p1CardVals.sort();
-			var orderedP2 = p2CardVals.sort();
-			var temp = winTest(orderedP1, orderedP2);
-			$('#winModal').css("display", "block");
-			if (temp === 1){
-				$('#winText').text('Player 1 wins with '+wins[p1Max]);
-			} else if (temp === 0){
-				$('#winText').text('Player 2 wins with '+wins[p2Max]);
-			} else {
-				$('#winText').text('It\'s a draw!')
-			}
-			$('.newGame').click(function() {
-				$('#winModal').css("display", "none");
-			});
-			$('.nope').click(function() {
-				$('#winModal').css("display", "none");
-			});
-		}
+		badAI();
+		buttonTurn();
 	});
 	
 
@@ -184,37 +269,7 @@ $(function(){
 	});
 
 	$('#resetGame').click(function() {
-		deck = [];
-		x = 0;
-		stageCount = 0;
-		p1CardVals = [];
-		p1CardSuits = [];
-		p2CardVals = [];
-		p2CardSuits = [];
-		for (i=0; i<vals.length; i++) {
-			for (j=0; j<suits.length; j++) {
-		    	deck[x] = new Card(suits[j], vals[i]);
-		    	x++;
-			}
-		}	
-		console.log(deck)
-		player1 = new Player(getCard(), 
-			getCard(), 1000, true);
-		player2 = new Player(getCard(), 
-			getCard(), 1000, false);
-		middle = new Middle(getCard(), getCard(), 
-			getCard(), getCard(), getCard());
-		
-		$('#p1c1').html(player1.card1Image());
-		$('#p1c2').html(player1.card2Image());
-		$('#p2c1').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#p2c2').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c1').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c2').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c3').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c4').html('<img src="card_images/back.png" alt="Card Back" />');
-		$('#m1c5').html('<img src="card_images/back.png" alt="Card Back" />');
-		takeTurn();
+		newGame();
 	});
 
 
@@ -230,6 +285,40 @@ $(function(){
 
 /*=========== Game Logic ================================================*/
 	
+	function getRandomInt(min, max) {
+	  min = Math.ceil(min);
+	  max = Math.floor(max);
+	  return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	var badAI = function() {
+		var rand = getRandomInt(1, 100);
+		var max = Math.max(...player2.best);
+		if(max >= 6){
+			bet(player2, 100);
+		} else if(max === 5) {
+			if(rand > 25)
+				bet(player2, 100);
+			else
+				bet(player2, 25);
+		} else if(max === 4) {
+			if(rand > 40)
+				bet(player2, 100);
+			else
+				bet(player2, 25);
+		} else if(max === 3) {
+			if(rand > 70)
+				bet(player2, 100);
+			else
+				bet(player2, 25);
+		} else if(max === 2) {
+			if(rand > 25)
+				bet(player2, 25);
+		} else if(max === 1) {
+			if(rand > 50)
+				bet(player2, 25);
+		}
+	}
 	var takeTurn = function() {
 		var p1SpadeC=0, p1ClubC=0, p1HeartC=0, p1DiamondC=0,
 		p2SpadeC=0, p2ClubC=0, p2HeartC=0, p2DiamondC=0;

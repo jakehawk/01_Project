@@ -19,28 +19,43 @@ button {
 	display: block;
 	margin: 0 auto;
 }
+.cssButton {
+  background-color: rgb(230, 255, 255); /* Green */
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: bold;
+  display: inline-block;
+  font-size: 20px;
 
+}
 img {
 	width: 120px;
 	height: 160px;
 	display: inline;	
 }
 .playerButtons {
-	display: inline-block;
-
+	float: center;
+	display: inline;
+}
+.score {
+	font-size: 30px;
+	color: rgb(230, 225, 255);
 }
 #credits {
 	color: rgb(230, 225, 255);
 }
 .gameScreen {
-	width: 800px;
+	margin: auto;
 }
-.player1,
-.player2,
-.middle {
-	float: left;
+#player1,
+#player2,
+#middle {
+	float: center;
 	text-align: none;
 	display: block;
+	margin: 0 auto;
 }
 .modal {
     display: none; /* Hidden by default */
