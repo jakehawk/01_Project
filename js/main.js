@@ -32,7 +32,9 @@ $(function(){
 				'\nand a '+this.val2+' of '+this.suit2;
 		}
 		this.card1Image = function() {
-			return '<img src="card_images/'+this.val1+'_of_'+this.suit1.toLowerCase()+'.png" alt="'+this.val1+' of '+this.suit1+'" />'
+			return '<img src="card_images/'+
+			this.val1+'_of_'+this.suit1.toLowerCase()+
+			'.png" alt="'+this.val1+' of '+this.suit1+'" />'
 		}
 		this.card2Image = function() {
 			return '<img src="card_images/'+
