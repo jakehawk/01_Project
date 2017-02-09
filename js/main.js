@@ -101,9 +101,8 @@ $(function(){
 	}
 	//akls;dfj;aklsdfj
 	function getCard() {
-		var min = Math.ceil(0);
 		var max = Math.floor(deck.length - 1);
-		var rand = Math.floor(Math.random() * (max - min)) + min;
+		var rand = Math.floor(Math.random() * max);
 		var newCard = deck[rand];
 		deck.splice(rand, 1);
 		return newCard;
