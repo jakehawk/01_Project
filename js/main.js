@@ -553,89 +553,67 @@ $(function(){
 		var p1Max = Math.max(...player1.best), p2Max = Math.max(...player2.best);
 		if (p1Max > p2Max){
 			return 1;
-			// console.log('P1 wins with '+wins[p1Max]);
 		}
 		else if (p1Max < p2Max){
 			return 0;
-			// console.log('P2 wins with '+wins[p2Max]);
 		}
 		else if (p1Max === p2Max) {
 			if (p1Max === 1){
 				if (player1.pairs[0] > player2.pairs[0]){
 					return 1;
-					// console.log('P1 wins with '+wins[p1Max]);
 				} else if (player1.pairs[0] < player2.pairs[0]){
 					return 0;
-					// console.log('P2 wins with '+wins[p2Max]);
 				} else {
 					if (findHigh(ordered1) > findHigh(ordered2)){
 						return 1;
-						// console.log('P1 wins with '+wins[p1Max]);
 					} else if (findHigh(ordered1) < findHigh(ordered2)){
 						return 0;
-						// console.log('P2 wins with '+wins[p2Max]);
 					} else {
-						return -1
-						// console.log('It\'s a tie!');
+						return -1;
 					}
 				}
 			} else if (p1Max === 2){
 				if (player1.pairs[0] > player2.pairs[0] && 
 					player1.pairs[1] > player2.pairs[1]){
 					return 1;
-					// console.log('P1 wins with '+wins[p1Max]);
 				} else if (player1.pairs[0] < player2.pairs[0] &&
 					player1.pairs[1] < player2.pairs[1]){
-					return 0
-					// console.log('P2 wins with '+wins[p2Max]);
+					return 0;
 				} else {
 					if (findHigh(ordered1) > findHigh(ordered2)){
-						return 1
-						// console.log('P1 wins with '+wins[p1Max]);
+						return 1;
 					} else if (findHigh(ordered1) < findHigh(ordered2)){
-						return 0
-						// console.log('P2 wins with '+wins[p2Max]);
+						return 0;
 					} else {
-						return -1
-						// console.log('It\'s a tie!');
+						return -1;
 					}
 				}
 			} else if (p1Max === 3){
 				if (player1.threes[0] > player2.threes[0]) {
-					return 1
-					// console.log('P1 wins with '+wins[p1Max]);
+					return 1;
 				} else if (player1.threes[0] < player2.threes[0]) {
-					return 0
-					// console.log('P2 wins with '+wins[p2Max]);
+					return 0;
 				} else {
-					return -1
-					// console.log('It\'s a tie!');
+					return -1;
 				}
 			} else if (p1Max === 7){
 				if (player1.fours[0] > player2.fours[0]) {
-					return 1
-					// console.log('P1 wins with '+wins[p1Max]);
+					return 1;
 				} else if (player1.fours[0] < player2.fours[0]) {
-					return 0
-					// console.log('P2 wins with '+wins[p2Max]);
+					return 0;
 				} else {
-					return -1
-					// console.log('It\'s a tie!');
+					return -1;
 				}
 			} else if (p1Max === 0){
 				if (findHigh(ordered1) > findHigh(ordered2)){
-					return 1
-					// console.log('P1 wins with '+wins[p1Max]);
+					return 1;
 				} else if (findHigh(ordered1) < findHigh(ordered2)){
-					return 0
-					// console.log('P2 wins with '+wins[p2Max]);
+					return 0;
 				} else {
-					return -1
-					// console.log('It\'s a tie!');
+					return -1;
 				}
 			} else {
-				return -1
-				// console.log('Someone probably wins, but idk who yet');
+				return -1;
 			}
 		}
 	}
