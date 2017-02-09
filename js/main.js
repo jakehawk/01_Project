@@ -144,16 +144,16 @@ $(function(){
 		takeTurn();
 	});
 
-	$('#bet25').click(function() {
-		bet(player1, 25);
+	$('#bet101').click(function() {
+		bet(player1, 101);
 		console.log(player1.totalBet);
 		badAI();
 		if(player1.totalBet === player2.totalBet)
 			buttonTurn();
 	});
 
-	$('#bet100').click(function() {
-		bet(player1, 100);
+	$('#bet500').click(function() {
+		bet(player1, 500);
 		console.log(player1.totalBet);
 		badAI();
 		buttonTurn();
@@ -335,9 +335,11 @@ $(function(){
 				$('#winModal').css("display", "none");
 			});
 		}
+		$('.playerButtons').attr('disabled','disabled');
 	}
+
 	var badAI = function() {
-		var rand = getRandomInt(1, 100);
+		var rand = getRandomInt(1, 500);
 		var max = Math.max(...player2.best);
 		var p1Bet = player1.totalBet, p2Bet = player2.totalBet;
 		var betDiff = p1Bet - p2Bet;
@@ -345,35 +347,35 @@ $(function(){
 
 		if(p1Bet === p2Bet) {
 			if(max >= 6){
-				bet(player2, 100);
+				bet(player2, 500);
 			} else if(max === 5) {
 				if(rand > 25)
-					bet(player2, 100);
+					bet(player2, 500);
 				else
-					bet(player2, 25);
+					bet(player2, 101);
 			} else if(max === 4) {
 				if(rand > 40)
-					bet(player2, 100);
+					bet(player2, 500);
 				else
-					bet(player2, 25);
+					bet(player2, 101);
 			} else if(max === 3) {
 				if(rand > 70)
-					bet(player2, 100);
+					bet(player2, 500);
 				else
-					bet(player2, 25);
+					bet(player2, 101);
 			} else if(max === 2) {
 				if(rand > 25)
-					bet(player2, 25);
+					bet(player2, 101);
 			} else if(max === 1) {
 				if(rand > 50)
-					bet(player2, 25);
+					bet(player2, 101);
 			}
 		} else if(p1Bet > p2Bet) {
 			if(max > 4)
 				bet(player2, betDiff);
-			else if(betDiff === 25)
+			else if(betDiff === 101)
 				bet(player2, betDiff);
-			else if(betDiff === 100) {
+			else if(betDiff === 500) {
 				if(rand > 50)
 					bet(player2, betDiff)
 				else
@@ -381,6 +383,7 @@ $(function(){
 			}
 		}
 	}
+	
 	var takeTurn = function() {
 		var p1SpadeC=0, p1ClubC=0, p1HeartC=0, p1DiamondC=0,
 		p2SpadeC=0, p2ClubC=0, p2HeartC=0, p2DiamondC=0;
