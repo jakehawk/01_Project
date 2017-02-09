@@ -278,9 +278,6 @@ $(function(){
 	});
 	$('.close').eq(0).click(function() {
 		location.reload();
-		// $('#myModal').css("display", "none");
-		// $('.gameScreen').toggleClass('off');
-		// $('.introScreen').toggleClass('off');
 	});
 
 	$('#resetGame').click(function() {
