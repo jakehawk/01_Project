@@ -18,11 +18,11 @@ $(function(){
 
 	function Player(card1, card2, chips, turn, num) {
 		this.val1 = card1.val;
-		//this.valArr = [card1.val, card2.val];
-		//player1.valArr.push(card3.val)
 		this.suit1 = card1.suit;
 		this.val2 = card2.val;
 		this.suit2 = card2.suit;
+		this.valArr = [this.val1, this.val2];
+		this.suitArr = [this.suit1, this.suit2];
 		this.chips = chips;
 		this.totalBet = 0;
 		this.turn = turn;
@@ -51,6 +51,22 @@ $(function(){
 		}
 		this.lose = function() {
 			this.totalBet = 0;
+		}
+		this.flop = function() {
+			this.valArr.push(middle.val1);
+			this.valArr.push(middle.val2);
+			this.valArr.push(middle.val3);
+			this.suitArr.push(middle.suit1);
+			this.suitArr.push(middle.suit2);
+			this.suitArr.push(middle.suit3);
+		}
+		this.turn = function() {
+			this.valArr.push(middle.val4);
+			this.suitArr.push(middle.suit4);
+		}
+		this.river = function() {
+			this.valArr.push(middle.val5);
+			this.suitArr.push(middle.suit5);	
 		}
 	}
 
@@ -121,6 +137,8 @@ $(function(){
 	}
 
 /*=========== Buttons  ==================================================*/	
+
+	$('#resetGame').attr('disabled','disabled');
 
 	$('#play').click(function() {
 		$('.introScreen').toggleClass('off');
@@ -211,6 +229,7 @@ $(function(){
 				$('#winModal').css("display", "none");
 			});
 			$('.playerButtons').attr('disabled','disabled');
+			$('#resetGame').removeAttr('disabled');
 		}
 	}
 
@@ -257,6 +276,7 @@ $(function(){
 		takeTurn();
 
 		$('.playerButtons').removeAttr('disabled');
+		$('#resetGame').attr('disabled', 'disabled');
 	}
 
 	var bet = function(player, amt) {
@@ -283,6 +303,7 @@ $(function(){
 	$('#resetGame').click(function() {
 		newGame();
 		$('.playerButtons').removeAttr('disabled');
+		$('#resetGame').attr('disabled', 'disabled');
 		$('#pot').text('Pot: 0');
 	});
 
@@ -337,6 +358,7 @@ $(function(){
 			});
 		}
 		$('.playerButtons').attr('disabled','disabled');
+		$('#resetGame').removeAttr('disabled');
 	}
 
 	var badAI = function() {
@@ -377,7 +399,7 @@ $(function(){
 			else if(betDiff === 100)
 				bet(player2, betDiff);
 			else if(betDiff === 250) {
-				if(rand > 50)
+				if(rand > 30)
 					bet(player2, betDiff)
 				else
 					fold(player2);
@@ -389,46 +411,24 @@ $(function(){
 		var p1SpadeC=0, p1ClubC=0, p1HeartC=0, p1DiamondC=0,
 		p2SpadeC=0, p2ClubC=0, p2HeartC=0, p2DiamondC=0;
 		if (!(middle.flop)) {
-			//Before middle is revealed
-			p1CardVals.push(player1.val1);
-			p1CardSuits.push(player1.suit1);
-			p1CardVals.push(player1.val2);
-			p1CardSuits.push(player1.suit2);
-			
-			p2CardVals.push(player2.val1);
-			p2CardSuits.push(player2.suit1);
-			p2CardVals.push(player2.val2);
-			p2CardSuits.push(player2.suit2);
 			console.log('Start!');
 			//Pair Check
-			if (p1CardVals[0] === p1CardVals[1]){
+			if (player1.valArr[0] === player1.valArr[1]){
 				player1.best.push(1);
-				player1.pairs.push(p1CardVals[1]);
+				player1.pairs.push(player1.valArr[1]);
 			}
-			if (p2CardVals[0] === p2CardVals[1]){
+			if (player2.valArr[0] === player2.valArr[1]){
 				player2.best.push(1);
-				player2.pairs.push(p2CardVals[1]);
+				player2.pairs.push(player2.valArr[1]);
 			}
 			middle.flop = true;
 		} else if (middle.flop && !(middle.turn)) {
 			//After Flop is revealed
-			p1CardVals.push(middle.val1);
-			p1CardVals.push(middle.val2);
-			p1CardVals.push(middle.val3);
-			p1CardSuits.push(middle.suit1);
-			p1CardSuits.push(middle.suit2);
-			p1CardSuits.push(middle.suit3);
-			
-			p2CardVals.push(middle.val1);
-			p2CardVals.push(middle.val2);
-			p2CardVals.push(middle.val3);
-			p2CardSuits.push(middle.suit1);
-			p2CardSuits.push(middle.suit2);
-			p2CardSuits.push(middle.suit3);
+			player1.flop();
+			player2.flop();
 
-			var orderedP1 = p1CardVals.sort();
-			var orderedP2 = p2CardVals.sort();
-			var straight = p1CardVals;
+			var orderedP1 = player1.valArr.sort();
+			var orderedP2 = player2.valArr.sort();
 
 			console.log('Flop!');
 			for (i=0; i<orderedP1.length; i++) {
@@ -490,11 +490,10 @@ $(function(){
 			$('#m1c2').html(middle.card2Image());
 			$('#m1c3').html(middle.card3Image());
  		} else if (middle.turn && !(middle.river)) {
-			//After Flop is revealed
-			p1CardVals.push(middle.val4);
-			p1CardSuits.push(middle.suit4);
-			p2CardVals.push(middle.val4);
-			p2CardSuits.push(middle.suit4);
+			//After Turn is revealed
+			player1.turn();
+			player2.turn();
+			
 			var orderedP1 = p1CardVals.sort();
 			var orderedP2 = p2CardVals.sort();
 			var straight = p1CardVals;
@@ -560,10 +559,9 @@ $(function(){
 			$('#m1c4').html(middle.card4Image());
 		} else if (middle.river) {
 			//After River is revealed
-			p1CardVals.push(middle.val5);
-			p1CardSuits.push(middle.suit5);
-			p2CardVals.push(middle.val5);
-			p2CardSuits.push(middle.suit5);
+			player1.river();
+			player2.river();
+
 			var orderedP1 = p1CardVals.sort();
 			var orderedP2 = p2CardVals.sort();
 			var straight = p1CardVals;
