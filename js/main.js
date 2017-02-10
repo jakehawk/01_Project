@@ -494,10 +494,11 @@ $(function(){
 			player1.turn();
 			player2.turn();
 			
-			var orderedP1 = p1CardVals.sort();
-			var orderedP2 = p2CardVals.sort();
+			var orderedP1 = player1.valArr.sort();
+			var orderedP2 = player2.valArr.sort();
 			var straight = p1CardVals;
 			console.log('Turn!')
+
 			//Loop through p1 cards
 			for (i=0; i<orderedP1.length; i++) {
 				pairTest(orderedP1, player1, i);
@@ -562,9 +563,8 @@ $(function(){
 			player1.river();
 			player2.river();
 
-			var orderedP1 = p1CardVals.sort();
-			var orderedP2 = p2CardVals.sort();
-			var straight = p1CardVals;
+			var orderedP1 = player1.valArr.sort();
+			var orderedP2 = player2.valArr.sort();
 
 			console.log('River!');
 			for (i=0; i<orderedP1.length; i++) {
